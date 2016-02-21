@@ -86,9 +86,6 @@
 
 	$(document).ready(function(){
 		
-		//링크 만들기 귀찮아서 그냥 여기에 함 - 나중에 수정
-		//$('#blliMemberVOForm').submit();
-		
 		$('.productInst').hover(function(){
 			$(this).children('.productInstAfter').css('display','block');
 		}, function(){
