@@ -105,4 +105,28 @@ public class PostingDAOImpl implements PostingDAO{
 	public int getPostingDislikeCount(BlliMemberScrapeVO scrapeVO) {
 		return sqlSessionTemplate.selectOne("posting.getPostingDislikeCount", scrapeVO);
 	}
+	@Override
+	public void deletePosting(BlliPostingVO postingVO) {
+		sqlSessionTemplate.delete("posting.deletePosting", postingVO);
+	}
+	@Override
+	public void insertPermanentDeadPosting(BlliPostingVO postingVO) {
+		sqlSessionTemplate.insert("posting.insertPermanentDeadPosting", postingVO);
+	}
+	@Override
+	public int updatePostingStatusToTemptdead(BlliPostingVO postingVO) {
+		return sqlSessionTemplate.update("posting.updatePostingStatusToTemptdead", postingVO);
+	}
+	@Override
+	public void updatePostingStatusToDeadBySmallProduct(String smallProductId) {
+		sqlSessionTemplate.update("posting.updatePostingStatusToDeadBySmallProduct", smallProductId);
+	}
+	@Override
+	public void resetPostingUpdateColumn(String smallProductId) {
+		sqlSessionTemplate.update("posting.resetPostingUpdateColumn", smallProductId);
+	}
+	@Override
+	public void updatePostingStatusToConfirmed(BlliPostingVO postingVO) {
+		sqlSessionTemplate.update("posting.updatePostingStatusToConfirmed", postingVO);
+	}
 }

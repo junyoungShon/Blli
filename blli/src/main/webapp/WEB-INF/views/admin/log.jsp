@@ -58,6 +58,9 @@ $(document).ready(function(){
 		var delayConnectionCount = $(this).parent().children("input[name=delayConnectionCount]").val();
 		var exceptionCount = $(this).parent().children("input[name=exceptionCount]").val();
 		var detailException = $(this).parent().children("input[name=detailException]").val();
+		var updateSmallProductStatusToDead = $(this).parent().children("input[name=updateSmallProductStatusToDead]").val();
+		var smallProductStatusDeadTodeadCount = $(this).parent().children("input[name=smallProductStatusDeadTodeadCount]").val();
+		var smallProductStatusDeadToUnconfirmed = $(this).parent().children("input[name=smallProductStatusDeadToUnconfirmed]").val();
 		if(methodName == "insertBigCategory"){
 			table += "<tr>";
 			table += "<th>총 대분류 개수</th>";
@@ -93,8 +96,6 @@ $(document).ready(function(){
 			table += "<th>insert한 소제품 개수</th>";
 			table += "<th>update한 소제품 개수</th>";
 			table += "<th>insert한 조건에 맞지 않는 소제품 개수</th>";
-			table += "<th>update하지 않은 소제품 개수</th>";
-			table += "<th>Exception 발생 횟수</th>";
 			table += "</tr>";
 			table += "<tr>";
 			table += "<td>"+highRankCategoryCount+"</td>";
@@ -102,6 +103,18 @@ $(document).ready(function(){
 			table += "<td>"+insertCategoryCount+"</td>";
 			table += "<td>"+updateCategoryCount+"</td>";
 			table += "<td>"+denySmallProductCount+"</td>";
+			table += "</tr>";
+			table += "<tr>";
+			table += "<th>confirmed -> dead로 변경된 소제품 개수</th>";
+			table += "<th>dead -> dead로 여전히 남아 있는 소제품 개수</th>";
+			table += "<th>dead -> unconfirmed로 변경된 소제품 개수</th>";
+			table += "<th>update하지 않은 소제품 개수</th>";
+			table += "<th>Exception 발생 횟수</th>";
+			table += "</tr>";
+			table += "<tr>";
+			table += "<td>"+updateSmallProductStatusToDead+"</td>";
+			table += "<td>"+smallProductStatusDeadTodeadCount+"</td>";
+			table += "<td>"+smallProductStatusDeadToUnconfirmed+"</td>";
 			table += "<td>"+notUpdateProductCount+"</td>";
 			table += "<td>"+exceptionCount+"</td>";
 			table += "</tr>";
@@ -131,9 +144,9 @@ $(document).ready(function(){
 		for(var i=0;i<detailException;i++){
 			if(i%2 == 0){
 				table += "<tr>";
-				table += "<th>Exception이 발생한 bigCategoryId</th>";
+				table += "<th>Exception이 발생한 ID or URL</th>";
 				table += "<th>Exception 내용</th>";
-				table += "<th>Exception이 발생한 bigCategoryId</th>";
+				table += "<th>Exception이 발생한 ID or URL</th>";
 				table += "<th>Exception 내용</th>";
 				table += "</tr>";
 				table += "<tr>";
@@ -210,6 +223,9 @@ $(document).on("click", ".exceptionPopUp", function(){
 			<input type="hidden" value="${log.delayConnectionCount}" name="delayConnectionCount">
 			<input type="hidden" value="${log.exceptionCount}" name="exceptionCount">
 			<input type="hidden" value="${fn:length(log.detailException)}" name="detailException">
+			<input type="hidden" value="${log.updateSmallProductStatusToDead}" name="updateSmallProductStatusToDead">
+			<input type="hidden" value="${log.smallProductStatusDeadTodeadCount}" name="smallProductStatusDeadTodeadCount">
+			<input type="hidden" value="${log.smallProductStatusDeadToUnconfirmed}" name="smallProductStatusDeadToUnconfirmed">
 			<c:forEach items="${log.detailException}" var="exceptionInfo">
 				<input type="hidden" value="${exceptionInfo.categoryId}" name="categoryId">
 				<input type="hidden" value="${exceptionInfo.exceptionContent}" name="exceptionContent">

@@ -10,8 +10,10 @@ import java.util.Map;
 
 
 
+
 import javax.servlet.http.HttpServletRequest;
  
+
 
 
 
@@ -28,10 +30,10 @@ public class BlliFileUtils {
     (HttpServletRequest request,ArrayList<BlliBabyVO> list) throws Exception{
     	String filePath = null;
     	if(System.getProperty("os.name").contains("Windows")){
-    		filePath = "C:\\Users\\junyoung\\git\\projectBlli2\\projectBlli2\\src\\main\\webapp\\babyphoto\\";
+    		filePath = "C:\\Users\\"+System.getProperty("user.name")+"\\git\\blli\\blli\\src\\main\\webapp\\babyphoto\\";
     	}else{
     		//서버 환경일 경우 path
-    		filePath = "/usr/bin/apache-tomcat-7.0.64/webapps/projectBlli2/babyphoto";
+    		filePath = "/usr/bin/apache-tomcat-7.0.64/webapps/blli/babyphoto";
     	}
         MultipartHttpServletRequest multipartHttpServletRequest  = (MultipartHttpServletRequest)request;
         

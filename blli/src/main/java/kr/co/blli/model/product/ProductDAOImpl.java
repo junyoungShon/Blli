@@ -1,5 +1,6 @@
 package kr.co.blli.model.product;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -452,4 +453,75 @@ public class ProductDAOImpl implements ProductDAO{
 	public String selectTotalProductNum() {
 		return sqlSessionTemplate.selectOne("product.selectTotalProductNum");
 	}
+
+	@Override
+	public void subtractDbInsertPostingCount(String smallProductId) {
+		sqlSessionTemplate.update("product.subtractDbInsertPostingCount", smallProductId);
+	}
+
+	@Override
+	public void subtractDbInsertPostingCountByTemptdead(HashMap<String, Object> map) {
+		sqlSessionTemplate.update("product.subtractDbInsertPostingCountByTemptdead", map);
+	}
+
+	@Override
+	public int updateSmallProductStatusToConfirmedByAdmin(String smallProductId) {
+		return sqlSessionTemplate.update("product.updateSmallProductStatusToConfirmedByAdmin", smallProductId);
+	}
+
+	@Override
+	public void updateSmallProductStatusToDead(String smallProductId) {
+		sqlSessionTemplate.update("product.updateSmallProductStatusToDead", smallProductId);
+	}
+
+	@Override
+	public BlliSmallProductVO getSmallProductWhenToUse(String midCategoryId) {
+		return sqlSessionTemplate.selectOne("product.getSmallProductWhenToUse", midCategoryId);
+	}
+
+	@Override
+	public void updateMidCategoryWhenToUse(BlliSmallProductVO smallProductVO) {
+		sqlSessionTemplate.update("product.updateMidCategoryWhenToUse", smallProductVO);
+	}
+
+	@Override
+	public int updateSmallProductStatusToDeadBySoldOut(String midCategoryId) {
+		return sqlSessionTemplate.update("product.updateSmallProductStatusToDeadBySoldOut", midCategoryId);
+	}
+
+	@Override
+	public void resetSmallProductUpdateColumn(String midCategoryId) {
+		sqlSessionTemplate.update("product.resetSmallProductUpdateColumn", midCategoryId);
+	}
+
+	@Override
+	public List<String> getSmallProductIdBySoldOut(String midCategoryId) {
+		return sqlSessionTemplate.selectList("product.getSmallProductIdBySoldOut", midCategoryId);
+	}
+
+	@Override
+	public void deleteSmallProductBuyLink(String smallProductId) {
+		sqlSessionTemplate.delete("product.deleteSmallProductBuyLink", smallProductId);
+	}
+
+	@Override
+	public String getSmallProductName(String smallProductId) {
+		return sqlSessionTemplate.selectOne("product.getSmallProductName", smallProductId);
+	}
+
+	@Override
+	public void updateSmallProductStatusToUnconfirmed(String smallProductId) {
+		sqlSessionTemplate.update("product.updateSmallProductStatusToUnconfirmed", smallProductId);
+	}
+
+	@Override
+	public void updateSmallProductInfo(BlliSmallProductVO blliSmallProductVO) {
+		sqlSessionTemplate.update("product.updateSmallProductInfo", blliSmallProductVO);
+	}
+
+	@Override
+	public void addDbInsertPostingCount(String smallProductId) {
+		sqlSessionTemplate.update("product.addDbInsertPostingCount", smallProductId);
+	}
+
 }

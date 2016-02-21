@@ -18,6 +18,9 @@ public class BlliLogVO {
 	private String denyPostingCount;
 	private String notUpdatePostingCount;
 	private String delayConnectionCount;
+	private String updateSmallProductStatusToDead;
+	private String smallProductStatusDeadTodeadCount;
+	private String smallProductStatusDeadToUnconfirmed;
 	private ArrayList<BlliDetailException> detailException;
 	public BlliLogVO() {
 		super();
@@ -119,6 +122,27 @@ public class BlliLogVO {
 	public void setDelayConnectionCount(String delayConnectionCount) {
 		this.delayConnectionCount = delayConnectionCount;
 	}
+	public String getUpdateSmallProductStatusToDead() {
+		return updateSmallProductStatusToDead;
+	}
+	public void setUpdateSmallProductStatusToDead(
+			String updateSmallProductStatusToDead) {
+		this.updateSmallProductStatusToDead = updateSmallProductStatusToDead;
+	}
+	public String getSmallProductStatusDeadTodeadCount() {
+		return smallProductStatusDeadTodeadCount;
+	}
+	public void setSmallProductStatusDeadTodeadCount(
+			String smallProductStatusDeadTodeadCount) {
+		this.smallProductStatusDeadTodeadCount = smallProductStatusDeadTodeadCount;
+	}
+	public String getSmallProductStatusDeadToUnconfirmed() {
+		return smallProductStatusDeadToUnconfirmed;
+	}
+	public void setSmallProductStatusDeadToUnconfirmed(
+			String smallProductStatusDeadToUnconfirmed) {
+		this.smallProductStatusDeadToUnconfirmed = smallProductStatusDeadToUnconfirmed;
+	}
 	@Override
 	public String toString() {
 		return "BlliLogVO [number=" + number + ", startTime=" + startTime
@@ -133,6 +157,12 @@ public class BlliLogVO {
 				+ ", denyPostingCount=" + denyPostingCount
 				+ ", notUpdatePostingCount=" + notUpdatePostingCount
 				+ ", delayConnectionCount=" + delayConnectionCount
-				+ ", detailException=" + detailException + "]";
+				+ ", updateSmallProductStatusToDead="
+				+ updateSmallProductStatusToDead
+				+ ", smallProductStatusDeadTodeadCount="
+				+ smallProductStatusDeadTodeadCount
+				+ ", smallProductStatusDeadToUnconfirmed="
+				+ smallProductStatusDeadToUnconfirmed + ", detailException="
+				+ detailException + "]";
 	}
 }

@@ -27,10 +27,12 @@
 		var flag = true;
 		
 		$(".deleteBtn").click(function(){
+			var postingUrl = $(this).children().eq(0).val();
+			var smallProductId = $(this).children().eq(0).attr("class");
 			$(this).parent().prev().children("img").css("border", "0px");
 			if(urlAndImage.length == 0){
-				urlAndImage.push({"postingUrl": $(this).children().eq(0).val(), "postingPhotoLink": "", 
-					"smallProductId": $(this).children().eq(0).attr("class"), "del": "YES"});
+				urlAndImage.push({"postingUrl": postingUrl, "postingPhotoLink": "", "postingTitle": "",
+					"smallProductId": smallProductId, "del": "YES"});
 			}else{
 				for(var i=0;i<urlAndImage.length;i++){
 					if(urlAndImage[i].postingUrl == $(this).children().eq(0).val()){
@@ -40,32 +42,37 @@
 					}
 				}
 				if(flag){
-					urlAndImage.push({"postingUrl": $(this).children().eq(0).val(), "postingPhotoLink": "", 
-						"smallProductId": $(this).children().eq(0).attr("class"), "del": "YES"});
+					urlAndImage.push({"postingUrl": postingUrl, "postingPhotoLink": "", "postingTitle": "",
+						"smallProductId": smallProductId, "del": "YES"});
 				}
 				flag = true;
 			}
 		});
 		
 		$(".mainImage").click(function(){
+			var postingUrl = $(this).attr("name");
+			var postingPhotoLink = $(this).attr("id");
+			var smallProductId = $(this).next().text();
+			var postingTitle = $(this).parent().parent().prev().children().children().children().children().text();
 			$(this).parent().children("img").css("border", "0px");
 			$(this).css("border", "5px solid red");
 			$(this).parent().next().children("label").children().first().prop("checked", false);
 			if(urlAndImage.length == 0){
-				urlAndImage.push({"postingUrl": $(this).attr("name"), "postingPhotoLink": $(this).attr("id"), 
-					"smallProductId": $(this).next().text(), "del": "NO"});
+				urlAndImage.push({"postingUrl": postingUrl, "postingPhotoLink": postingPhotoLink, "postingTitle": postingTitle,
+					"smallProductId": smallProductId, "del": "NO"});
 			}else{
 				for(var i=0;i<urlAndImage.length;i++){
-					if(urlAndImage[i].postingUrl == $(this).attr("name")){
-						urlAndImage[i].postingPhotoLink = $(this).attr("id");
+					if(urlAndImage[i].postingUrl == postingUrl){
+						urlAndImage[i].postingPhotoLink = postingPhotoLink;
+						urlAndImage[i].postingTitle = postingTitle;
 						urlAndImage[i].del = "NO";
 						flag = false;
 						break;
 					}
 				}
 				if(flag){
-					urlAndImage.push({"postingUrl": $(this).attr("name"), "postingPhotoLink": $(this).attr("id"), 
-						"smallProductId": $(this).next().text(), "del": "NO"});
+					urlAndImage.push({"postingUrl": postingUrl, "postingPhotoLink": postingPhotoLink, "postingTitle": postingTitle,
+						"smallProductId": smallProductId, "del": "NO"});
 				}
 				flag = true;
 			}

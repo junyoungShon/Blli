@@ -133,9 +133,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select count(*) from blli_small_product where small_product_status = 'unconfirmed'
 	</select>
 	
-	<update id="deletePosting">
-		update blli_posting set posting_status = 'dead' where posting_url = #{postingUrl}
-	</update>
+	<delete id="deletePosting">
+		delete from blli_posting where posting_url = #{postingUrl}
+	</delete>
 	
 	<update id="selectProduct">
 		update blli_posting set posting_status = 'confirmed' where posting_url = #{postingUrl} and small_product = #{smallProduct}
@@ -156,7 +156,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</update>
 	
 	<update id="deleteSmallProduct">
-		update blli_small_product set small_product_status = 'dead' where small_product_id = #{smallProductId}
+		update blli_small_product set small_product_status = 'deadbyadmin' where small_product_id = #{smallProductId}
 	</update>
 	
 	<update id="registerSmallProduct">
@@ -203,6 +203,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<update id="updateSmallProductStatus">
 		update blli_small_product set small_product_status = 'confirmed' where small_product_id = #{smallProductId} and db_insert_posting_count >= 5 and small_product_status = 'confirmedbyadmin' 
+	</update>
+	
+	<insert id="insertPermanentDeadPosting">
+		insert into blli_permanent_dead_posting(posting_url, posting_title) values(#{postingUrl}, #{postingTitle})
+	</insert>
+	
+	<update id="updatePostingStatusToconfirmed">
+		update blli_posting set posting_status = 'confirmed' where small_product_id = #{smallProductId} and posting_status = 'deadbysmallproduct'
 	</update>
 	<!-- 현석 쿼리 끝 -->
 	<!-- 준영 쿼리 시작 -->

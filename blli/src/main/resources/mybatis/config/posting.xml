@@ -39,7 +39,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  	</select>
  	
  	<update id="updatePosting">
- 		update blli_posting set posting_rank = #{postingRank}
+ 		update blli_posting set posting_rank = #{postingRank}, posting_update = 'YES'
  		where posting_url like '%' || #{postingUrl} || '%' and small_product_id = #{smallProductId} and posting_title = #{postingTitle}
  	</update>
  	
@@ -94,6 +94,30 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="getPostingDislikeCount" resultType="int">
 		select count(*) from blli_posting_dislike where posting_url = #{postingUrl} and small_product_id = #{smallProductId}
 	</select>
+	
+	<delete id="deletePosting">
+		delete from blli_posting where posting_url = #{postingUrl} and small_product_id = #{smallProductId}
+	</delete>
+	
+	<insert id="insertPermanentDeadPosting">
+		insert into blli_permanent_dead_posting(posting_url, posting_title) values(#{postingUrl}, #{postingTitle})
+	</insert>
+	
+	<update id="updatePostingStatusToTemptdead">
+		update blli_posting set posting_status = 'temptdead' where small_product_id = #{smallProductId} and posting_status = 'confirmed' and posting_update = 'NO'
+	</update>
+	
+	<update id="updatePostingStatusToDeadBySmallProduct">
+		update blli_posting set posting_status = 'deadbysmallproduct' where small_product_id = #{smallProductId} and posting_status = 'confirmed'
+	</update>
+	
+	<update id="resetPostingUpdateColumn">
+		update blli_posting set posting_update = 'NO' where small_product_id = #{smallProductId} and posting_status = 'confirmed'
+	</update>
+	
+	<update id="updatePostingStatusToConfirmed">
+		update blli_posting set posting_status = 'confirmed' where posting_url like '%' || #{postingUrl} || '%' and posting_title = #{postingTitle}
+	</update>
 	<!-- 현석 쿼리 끝 -->
 	
 	<!-- 준영쿼리 시작 -->

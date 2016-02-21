@@ -68,7 +68,11 @@ public interface AdminDAO {
 
 	List<BlliMemberVO> checkMember();
 
-	void updateSmallProductStatus(String smallProductId);
+	int updateSmallProductStatus(String smallProductId);
+
+	void insertPermanentDeadPosting(BlliPostingVO vo);
+
+	void updatePostingStatusToconfirmed(String smallProductId);
 
 }
  

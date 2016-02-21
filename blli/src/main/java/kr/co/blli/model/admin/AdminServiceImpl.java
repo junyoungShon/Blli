@@ -123,7 +123,7 @@ public class AdminServiceImpl implements AdminService{
 			String url = postingList.get(i).getPostingUrl();
 			String smallProduct = postingList.get(i).getSmallProduct();
 			Document doc = Jsoup.connect("http://shopping.naver.com/search/all_search.nhn?query="+smallProduct+
-					"&pagingIndex=1&pagingSize=40&productSet=model&viewType=list&sort=rel&searchBy=none&frm=NVSHMDL").get();
+					"&pagingIndex=1&pagingSize=40&productSet=model&viewType=list&sort=rel&searchBy=none&frm=NVSHMDL").timeout(0).get();
 			Elements imgTag = doc.select("img");
 			HashMap<String, String> smallProductImage = new HashMap<String, String>();
 			for(Element e : imgTag){
@@ -282,25 +282,33 @@ public class AdminServiceImpl implements AdminService{
 	 */
 	@Override
 	public void selectProduct(List<Map<String, Object>> urlAndImage) {
+		ArrayList<BlliPostingVO> blliPostingVOList = new ArrayList<BlliPostingVO>();
 		for(int i=0;i<urlAndImage.size();i++){
 			String delete = urlAndImage.get(i).get("del").toString();
 			String postingUrl = urlAndImage.get(i).get("postingUrl").toString();
 			String postingPhotoLink = urlAndImage.get(i).get("postingPhotoLink").toString();
 			String smallProduct = urlAndImage.get(i).get("smallProduct").toString();
 			String smallProductId = urlAndImage.get(i).get("smallProductId").toString();
+			String postingTitle = urlAndImage.get(i).get("postingTitle").toString();
 			BlliPostingVO vo = new BlliPostingVO();
 			vo.setPostingUrl(postingUrl);
 			vo.setPostingPhotoLink(postingPhotoLink);
 			vo.setSmallProduct(smallProduct);
 			vo.setSmallProductId(smallProductId);
+			vo.setPostingTitle(postingTitle);
 			if(delete.equals("YES")){
 				adminDAO.deletePosting(vo);
+				adminDAO.insertPermanentDeadPosting(vo);
 			}else{
+				vo.setPostingPhotoLink(blliFileDownLoader.imgFileDownLoader(
+						postingPhotoLink,UUID.randomUUID().toString().replace("-", ""), "postingImage"));
+				blliPostingVOList.add(vo);
 				adminDAO.selectProduct(vo);
 				adminDAO.updatePostingCount(vo);
 				adminDAO.updateSmallProductStatus(smallProductId);
 			}
 		}
+		insertAndUpdateWordCloud(blliPostingVOList);
 	}
 	/**
 	 * 
@@ -318,16 +326,16 @@ public class AdminServiceImpl implements AdminService{
 			String postingUrl = urlAndImage.get(i).get("postingUrl").toString();
 			String postingPhotoLink = urlAndImage.get(i).get("postingPhotoLink").toString();
 			String smallProductId = urlAndImage.get(i).get("smallProductId").toString();
+			String postingTitle = urlAndImage.get(i).get("postingTitle").toString();
 			BlliPostingVO vo = new BlliPostingVO();
 			//이미지 파일 다운로드
 			vo.setPostingUrl(postingUrl);
 			vo.setSmallProductId(smallProductId);
+			vo.setPostingTitle(postingTitle);
 			if(delete.equals("YES")){
 				adminDAO.deletePosting(vo);
+				adminDAO.insertPermanentDeadPosting(vo);
 			}else{
-				vo.setPostingPhotoLink
-				(blliFileDownLoader.imgFileDownLoader(postingPhotoLink,UUID.randomUUID().toString().replace("-", ""),
-						"postingImage"));
 				vo.setPostingPhotoLink(blliFileDownLoader.imgFileDownLoader(
 						postingPhotoLink,UUID.randomUUID().toString().replace("-", ""), "postingImage"));
 				blliPostingVOList.add(vo);
@@ -365,15 +373,19 @@ public class AdminServiceImpl implements AdminService{
 						(smallProductWhenToUseMax == null || smallProductWhenToUseMax == "")){
 					adminDAO.updateSmallProductName(vo);
 				}else{
-					if(smallProductWhenToUseMin == null || smallProductWhenToUseMin == ""){
-						smallProductWhenToUseMin = "0";
+					adminDAO.updatePostingStatusToconfirmed(vo.getSmallProductId());
+					int updateResult = adminDAO.updateSmallProductStatus(vo.getSmallProductId());
+					if(updateResult == 1){
+						if(smallProductWhenToUseMin == null || smallProductWhenToUseMin == ""){
+							smallProductWhenToUseMin = "0";
+						}
+						if(smallProductWhenToUseMax == null || smallProductWhenToUseMax == ""){
+							smallProductWhenToUseMax = "36";
+						}
+						vo.setSmallProductWhenToUseMin(Integer.parseInt(smallProductWhenToUseMin));
+						vo.setSmallProductWhenToUseMax(Integer.parseInt(smallProductWhenToUseMax));
+						adminDAO.updateMidCategoryWhenToUse(vo);
 					}
-					if(smallProductWhenToUseMax == null || smallProductWhenToUseMax == ""){
-						smallProductWhenToUseMax = "36";
-					}
-					vo.setSmallProductWhenToUseMin(Integer.parseInt(smallProductWhenToUseMin));
-					vo.setSmallProductWhenToUseMax(Integer.parseInt(smallProductWhenToUseMax));
-					adminDAO.updateMidCategoryWhenToUse(vo);
 					if(vo.getSmallProduct() == null || vo.getSmallProduct() == ""){
 						adminDAO.registerSmallProduct(vo);
 					}else{
@@ -381,7 +393,6 @@ public class AdminServiceImpl implements AdminService{
 					}
 				}
 			}
-			adminDAO.updateSmallProductStatus(vo.getSmallProductId());
 		}
 	}
 	@Override
@@ -452,7 +463,7 @@ public class AdminServiceImpl implements AdminService{
 		try {
 			String localPath = null;
 			if(System.getProperty("os.name").contains("Windows")){
-				localPath = "C:\\Users\\"+System.getProperty("user.name")+"\\git\\projectBlli2\\projectBlli2\\src\\main\\webapp\\logFile\\blliLog.log";
+				localPath = "C:\\Users\\"+System.getProperty("user.name")+"\\git\\blli\\blli\\src\\main\\webapp\\logFile\\blliLog.log";
 			}else{
 				//서버 환경일 경우 path
 				localPath = "/usr/bin/apache-tomcat-7.0.64/webapps/logFile/blliLog.log";
@@ -511,6 +522,12 @@ public class AdminServiceImpl implements AdminService{
 					}else{
 						vo.setUpdateCategoryCount(message.substring(message.lastIndexOf(":")+2));
 					}
+				}else if(message.startsWith("confirmed")){
+					vo.setUpdateSmallProductStatusToDead(message.substring(message.lastIndexOf(":")+2));
+				}else if(message.startsWith("dead -> dead")){
+					vo.setSmallProductStatusDeadTodeadCount(message.substring(message.lastIndexOf(":")+2));
+				}else if(message.startsWith("dead -> unconfirmed")){
+					vo.setSmallProductStatusDeadToUnconfirmed(message.substring(message.lastIndexOf(":")+2));
 				}else if(message.startsWith("시간지연")){
 					vo.setDelayConnectionCount(message.substring(message.lastIndexOf(":")+2));
 				}else if(message.startsWith("Exception 발생 횟수")){
@@ -535,9 +552,9 @@ public class AdminServiceImpl implements AdminService{
 					vo.setDetailException(detailException);
 					list.add(vo);
 					detailException = new ArrayList<BlliDetailException>();
-					if(number > 20){
+					/*if(number > 20){
 						break;
-					}
+					}*/
 				}
 			}
 			in.close();
@@ -582,6 +599,7 @@ public class AdminServiceImpl implements AdminService{
 	@Override
 	public void deletePosting(BlliPostingVO postingVO) {
 		adminDAO.deletePosting(postingVO);
+		adminDAO.insertPermanentDeadPosting(postingVO);
 	}
 	@Override
 	public void notAdvertisingPosting(BlliPostingVO postingVO) {
