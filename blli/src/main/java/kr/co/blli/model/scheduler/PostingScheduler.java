@@ -76,19 +76,29 @@ public class PostingScheduler {
 				String postingReplyCount = ""; //댓글 수
 				ArrayList<String> regex = new BlliPostingVO().regex; //html에서 제거되야 할 태그와 특수문자들 리스트
 				ArrayList<String> denyWord = new BlliPostingVO().denyWord;
-				int countOfPosting = 0;
 				boolean denyFlag = false;
+				int countOfPosting = 0;
 				int insertPostingCount = 0;
 				int updatePostingCount = 0;
 				int notUpdatePostingCount = 0;
-				int exceptionCount = 0;
-				int allExceptionCount = 0;
 				int denyPostingCount = 0;
 				int delayConnectionCount = 0;
 				int deletePostingCount = 0;
 				int updatePostingStatusToTemptdead = 0;
 				int updateSmallProductStatusToConfirmedByAdmin = 0;
 				int updatePostingStatusToConfirmed = 0;
+				int preCountOfPosting = 0;
+				int preInsertPostingCount = 0;
+				int preUpdatePostingCount = 0;
+				int preNotUpdatePostingCount = 0;
+				int preDenyPostingCount = 0;
+				int preDelayConnectionCount = 0;
+				int preDeletePostingCount = 0;
+				int preUpdatePostingStatusToTemptdead = 0;
+				int preUpdateSmallProductStatusToConfirmedByAdmin = 0;
+				int preUpdatePostingStatusToConfirmed = 0;
+				int exceptionCount = 0;
+				int allExceptionCount = 0;
 				LinkedHashMap<String, String> detailException = new LinkedHashMap<String, String>();
 				BlliPostingVO postingVO = null;
 				long end = 0;
@@ -140,6 +150,16 @@ public class PostingScheduler {
 								}else{
 									count = k;
 								}
+								preCountOfPosting = countOfPosting;
+								preInsertPostingCount = insertPostingCount;
+								preUpdatePostingCount = updatePostingCount;
+								preNotUpdatePostingCount = notUpdatePostingCount;
+								preDenyPostingCount = denyPostingCount;
+								preDelayConnectionCount = delayConnectionCount;
+								preDeletePostingCount = deletePostingCount;
+								preUpdatePostingStatusToTemptdead = updatePostingStatusToTemptdead;
+								preUpdateSmallProductStatusToConfirmedByAdmin = updateSmallProductStatusToConfirmedByAdmin;
+								preUpdatePostingStatusToConfirmed = updatePostingStatusToConfirmed;
 								Element postingInfo = postingList.get(k);
 								postingVO = new BlliPostingVO();
 								if(postingRank > maxPosting){
@@ -380,6 +400,36 @@ public class PostingScheduler {
 							flag = false;
 						}catch(Exception exception){
 							exception.printStackTrace();
+							if(preCountOfPosting != countOfPosting){
+								countOfPosting--;
+							}
+							if(preInsertPostingCount != insertPostingCount){
+								insertPostingCount--;
+							}
+							if(preUpdatePostingCount != updatePostingCount){
+								updatePostingCount--;
+							}
+							if(preNotUpdatePostingCount != notUpdatePostingCount){
+								notUpdatePostingCount--;
+							}
+							if(preDenyPostingCount != denyPostingCount){
+								denyPostingCount--;
+							}
+							if(preDelayConnectionCount != delayConnectionCount){
+								delayConnectionCount--;
+							}
+							if(preDeletePostingCount != deletePostingCount){
+								deletePostingCount--;
+							}
+							if(preUpdatePostingStatusToTemptdead != updatePostingStatusToTemptdead){
+								updatePostingStatusToTemptdead--;
+							}
+							if(preUpdateSmallProductStatusToConfirmedByAdmin != updateSmallProductStatusToConfirmedByAdmin){
+								updateSmallProductStatusToConfirmedByAdmin--;
+							}
+							if(preUpdatePostingStatusToConfirmed != updatePostingStatusToConfirmed){
+								updatePostingStatusToConfirmed--;
+							}
 							exceptionCount++;
 							if(!detailException.containsKey(postingVO.getPostingUrl())){
 								allExceptionCount++;
