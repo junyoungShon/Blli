@@ -102,14 +102,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<update id="updateSmallProduct">
-		update blli_small_product set small_product_posting_count = #{smallProductPostingCount}, naver_shopping_rank = #{naverShoppingRank}
+		update blli_small_product set small_product_posting_count = #{smallProductPostingCount}, naver_shopping_rank = #{naverShoppingRank}, small_product_update = 'YES'
 		where small_product_id = #{smallProductId}
 	</update>
 	
 	<insert id="insertSmallProduct">
 		insert into blli_small_product(small_product_id, small_product, mid_category, small_product_maker, small_product_main_photo_link, 
 		small_product_posting_count, naver_shopping_rank, product_register_day, mid_category_id, small_product_status, 
-		product_db_insert_date,detail_view_count,small_Product_Ranking)
+		product_db_insert_date,detail_view_count,small_product_ranking)
 		values(#{smallProductId}, #{smallProduct}, #{midCategory}, #{smallProductMaker}, #{smallProductMainPhotoLink}, 
 		#{smallProductPostingCount}, #{naverShoppingRank}, #{productRegisterDay}, #{midCategoryId}, 'unconfirmed', sysdate,0,0)
 	</insert>
@@ -131,7 +131,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<update id="updateSmallProductBuyLink">
 		update blli_small_prod_buy_link set buy_link = #{buyLink}, buy_link_price = #{buyLinkPrice}, 
-		buy_link_delivery_cost = #{buyLinkDeliveryCost}, buy_link_option = #{buyLinkOption}, seller = #{seller}
+		buy_link_delivery_cost = #{buyLinkDeliveryCost}, buy_link_option = #{buyLinkOption}, seller = #{seller}, small_prod_buy_link_update = 'YES'
 		where small_product_id = #{smallProductId} and seller = #{seller}
 	</update>
 	
@@ -191,6 +191,67 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="totalPageOfSmallProductRelatedSearchWord" resultType="int">
 		select ceil(count(*)/10) from blli_small_product where small_product like '%' || #{searchWord} || '%' and small_product_status = 'confirmed'
 	</select>
+	
+	<update id="subtractDbInsertPostingCount">
+		update blli_small_product set db_insert_posting_count = db_insert_posting_count - 1 where small_product_id = #{smallProductId}
+	</update>
+	
+	<update id="subtractDbInsertPostingCountByTemptdead">
+		update blli_small_product set db_insert_posting_count = db_insert_posting_count - #{subtractCount} where small_product_id = #{smallProductId}
+	</update>
+	
+	<update id="updateSmallProductStatusToConfirmedByAdmin">
+		update blli_small_product set small_product_status = 'confirmedbyadmin' where small_product_id = #{smallProductId} and 5 > db_insert_posting_count and small_product_status = 'confirmed' 
+	</update>
+	
+	<update id="updateSmallProductStatusToDead">
+		update blli_small_product set small_product_status = 'dead' where small_product_id = #{smallProductId}
+	</update>
+	
+	<select id="getSmallProductWhenToUse" resultMap="bspvRM">
+		select min(small_product_whentouse_min) as small_product_whentouse_min, max(small_product_whentouse_max) as small_product_whentouse_max 
+		from blli_small_product where mid_category_id = #{midCategoryId} and small_product_status = 'confirmed'
+	</select>
+	
+	<update id="updateMidCategoryWhenToUse">
+		update blli_mid_category set mid_category_whentouse_min = #{small_product_whentouse_min}, mid_category_whentouse_max = #{small_product_whentouse_max} where mid_category_id = #{midCategoryId}
+	</update>
+	
+	<update id="updateSmallProductStatusToDeadBySoldOut">
+		update blli_small_product set small_product_status = 'dead' where mid_category_id = #{midCategoryId} and small_product_status = 'confirmed' and small_product_update = 'NO'
+	</update>
+	
+	<update id="resetSmallProductUpdateColumn">
+		update blli_small_product set small_product_update = 'NO' where mid_category_id = #{midCategoryId} and small_product_status = 'confirmed'
+	</update>
+	
+	<select id="getSmallProductIdBySoldOut" resultType="String">
+		select small_product_id from blli_small_product where mid_category_id = #{midCategoryId} and small_product_status = 'confirmed' and small_product_update = 'NO'
+	</select>
+	
+	<delete id="deleteSmallProductBuyLink">
+		delete from blli_small_prod_buy_link where small_product_id = #{smallProductId} and small_prod_buy_link_update = 'NO'
+	</delete>
+	
+	<select id="getSmallProductName" resultType="String">
+		select small_product from blli_small_product where small_product_id = #{smallProductId}
+	</select>
+	
+	<update id="updateSmallProductStatusToUnconfirmed">
+		update blli_small_product set small_product_status = 'unconfirmed' where small_product_id = #{smallProductId}
+	</update>
+	
+	<update id="updateSmallProductInfo">
+		update blli_small_product set small_product = #{smallProduct}, mid_category = #{midCategory}, small_product_maker = #{smallProductMaker},
+		small_product_main_photo_link = #{smallProductMainPhotoLink}, small_product_posting_count = #{smallProductPostingCount},
+		naver_shopping_rank = #{naverShoppingRank}, product_register_day = #{productRegisterDay}, mid_category_id = #{midCategoryId},
+		small_product_status = 'unconfirmed', product_db_insert_date = sysdate, detail_view_count = 0, small_product_ranking = 0
+		where small_product_id = #{smallProductId}
+	</update>
+	
+	<update id="addDbInsertPostingCount">
+		update blli_small_product set db_insert_posting_count = db_insert_posting_count + 1 where small_product_id = #{smallProductId}
+	</update>
 	<!-- 현석 쿼리 끝 -->
 
 	<!-- 준영쿼리 시작 -->

@@ -53,7 +53,7 @@ public class AdminDAOImpl implements AdminDAO{
 	}
 	@Override
 	public void deletePosting(BlliPostingVO vo) {
-		sqlSessionTemplate.update("admin.deletePosting", vo);
+		sqlSessionTemplate.delete("admin.deletePosting", vo);
 	}
 	@Override
 	public void selectProduct(BlliPostingVO vo) {
@@ -139,7 +139,15 @@ public class AdminDAOImpl implements AdminDAO{
 		return sqlSessionTemplate.selectList("admin.checkMember");
 	}
 	@Override
-	public void updateSmallProductStatus(String smallProductId) {
-		sqlSessionTemplate.update("admin.updateSmallProductStatus", smallProductId);
+	public int updateSmallProductStatus(String smallProductId) {
+		return sqlSessionTemplate.update("admin.updateSmallProductStatus", smallProductId);
+	}
+	@Override
+	public void insertPermanentDeadPosting(BlliPostingVO vo) {
+		sqlSessionTemplate.insert("admin.insertPermanentDeadPosting", vo);
+	}
+	@Override
+	public void updatePostingStatusToconfirmed(String smallProductId) {
+		sqlSessionTemplate.update("admin.updatePostingStatusToconfirmed", smallProductId);
 	}
 }

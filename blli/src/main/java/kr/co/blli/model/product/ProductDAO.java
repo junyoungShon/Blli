@@ -1,5 +1,6 @@
 package kr.co.blli.model.product;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -148,5 +149,33 @@ public interface ProductDAO {
 	String selectProductMinPrice(String smallProductId);
 
 	String selectTotalProductNum();
+
+	void subtractDbInsertPostingCount(String smallProductId);
+
+	void subtractDbInsertPostingCountByTemptdead(HashMap<String, Object> map);
+
+	int updateSmallProductStatusToConfirmedByAdmin(String smallProductId);
+
+	void updateSmallProductStatusToDead(String smallProductId);
+
+	BlliSmallProductVO getSmallProductWhenToUse(String midCategoryId);
+
+	void updateMidCategoryWhenToUse(BlliSmallProductVO smallProductVO);
+
+	int updateSmallProductStatusToDeadBySoldOut(String midCategoryId);
+
+	void resetSmallProductUpdateColumn(String midCategoryId);
+
+	List<String> getSmallProductIdBySoldOut(String midCategoryId);
+
+	void deleteSmallProductBuyLink(String smallProductId);
+
+	String getSmallProductName(String smallProductId);
+
+	void updateSmallProductStatusToUnconfirmed(String smallProductId);
+
+	void updateSmallProductInfo(BlliSmallProductVO blliSmallProductVO);
+
+	void addDbInsertPostingCount(String smallProductId);
 
 }

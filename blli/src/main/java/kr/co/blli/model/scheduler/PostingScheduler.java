@@ -5,6 +5,7 @@ import java.net.SocketTimeoutException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Random;
@@ -54,14 +55,14 @@ public class PostingScheduler {
 				long start = System.currentTimeMillis(); // 시작시간 
 				Logger logger = Logger.getLogger(getClass());
 				String methodName = new Throwable().getStackTrace()[0].getMethodName();
-				logger.info("start : "+methodName);
-				logger.info("요청자 : scheduler");
+				logger.error("start : "+methodName);
+				logger.error("요청자 : scheduler");
 				Calendar cal = Calendar.getInstance();
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd hh:mm:ss");
 				String datetime = sdf.format(cal.getTime());
-				logger.info("발생 일자 : "+datetime);
+				logger.error("발생 일자 : "+datetime);
 				
-				String key = "2a636a785d0e03f7048319f8adb3d912"; //네이버 검색API 이용하기 위해 발급받은 key값 세번째
+				String key = "6694c8294c8d04cdfe78262583a13052"; //네이버 검색API 이용하기 위해 발급받은 key값
 				//소제품 리스트를 불러와 변수에 할당
 				ArrayList<BlliSmallProductVO> smallProductList = (ArrayList<BlliSmallProductVO>)productDAO.getSmallProduct(); 
 				String postingUrl = ""; //포스팅 주소
@@ -75,70 +76,103 @@ public class PostingScheduler {
 				String postingReplyCount = ""; //댓글 수
 				ArrayList<String> regex = new BlliPostingVO().regex; //html에서 제거되야 할 태그와 특수문자들 리스트
 				ArrayList<String> denyWord = new BlliPostingVO().denyWord;
-				int countOfAllPosting = 0;
-				boolean flag = true;
 				boolean denyFlag = false;
-				int count = 0;
+				int countOfPosting = 0;
 				int insertPostingCount = 0;
 				int updatePostingCount = 0;
 				int notUpdatePostingCount = 0;
-				int exceptionCount = 0;
-				int allExceptionCount = 0;
 				int denyPostingCount = 0;
 				int delayConnectionCount = 0;
+				int deletePostingCount = 0;
+				int updatePostingStatusToTemptdead = 0;
+				int updateSmallProductStatusToConfirmedByAdmin = 0;
+				int updatePostingStatusToConfirmed = 0;
+				int preCountOfPosting = 0;
+				int preInsertPostingCount = 0;
+				int preUpdatePostingCount = 0;
+				int preNotUpdatePostingCount = 0;
+				int preDenyPostingCount = 0;
+				int preDelayConnectionCount = 0;
+				int preDeletePostingCount = 0;
+				int preUpdatePostingStatusToTemptdead = 0;
+				int preUpdateSmallProductStatusToConfirmedByAdmin = 0;
+				int preUpdatePostingStatusToConfirmed = 0;
+				int exceptionCount = 0;
+				int allExceptionCount = 0;
 				LinkedHashMap<String, String> detailException = new LinkedHashMap<String, String>();
 				BlliPostingVO postingVO = null;
 				long end = 0;
 				Document doc = null;
 				
 				label:
-				while(flag){
-					try{
-						for(int i=count;i<smallProductList.size();i++){ //소제품들 한개씩 뽑아서 포스팅 검색
-							if(exceptionCount > 3){
-								count = i+1;
-								exceptionCount = 0;
-							}else{
-								count = i;
-							}
-							double maxPosting = 50; //검색할 포스팅 최대 개수
-							/*System.out.println("소제품명 : "+smallProductList.get(i).getSmallProduct());
-							System.out.println("소제품 카운트 : "+(i+1));*/
-							
-							int countOfPosting = 0; //검색 순위
-							smallProduct = smallProductList.get(i).getSmallProduct().replaceAll("&", "%26");
-							int totalPosting = 0;
-							
+				for(int i=0;i<smallProductList.size();i++){ //소제품들 한개씩 뽑아서 포스팅 검색
+					double maxPosting = 50; //검색할 포스팅 최대 개수
+					
+					int postingRank = 0; //검색 순위
+					smallProduct = smallProductList.get(i).getSmallProduct().replaceAll("&", "%26");
+					int totalPosting = 0;
+					
+					doc = Jsoup.connect("http://openapi.naver.com/search?key="+key+"&query="+
+									smallProduct+"&display=100&start=1&target=blog&sort=sim").timeout(0).get();
+					if(doc.select("message").text().contains("Query limit exceeded")){
+						key = "0a044dc7c63b8f3b9394e1a5e49db7ab";
+						doc = Jsoup.connect("http://openapi.naver.com/search?key="+key+"&query="+
+								smallProduct+"&display=100&start=1&target=blog&sort=sim").timeout(0).get();
+						if(doc.select("message").text().contains("Query limit exceeded")){
+							key = "2a636a785d0e03f7048319f8adb3d912";
 							doc = Jsoup.connect("http://openapi.naver.com/search?key="+key+"&query="+
-											smallProduct+"&display=100&start=1&target=blog&sort=sim").timeout(0).get();
-							if(doc.select("message").text().contains("Query limit exceeded")){
-								key = "0a044dc7c63b8f3b9394e1a5e49db7ab";
-								doc = Jsoup.connect("http://openapi.naver.com/search?key="+key+"&query="+
-										smallProduct+"&display=100&start=1&target=blog&sort=sim").timeout(0).get();
-							}
-							//소제품 관련 총 포스팅 개수
-							String totalPostingText = doc.select("total").text().trim();
-							if(totalPostingText.equals("")){
-								totalPostingText = "0";
-							}
-							totalPosting = Integer.parseInt(totalPostingText);
-							if(Math.ceil(totalPosting*0.3) < maxPosting){ //총 포스팅 개수의 30%가 50개 미만일 경우 
-																			 //포스팅 최대 개수를 총 포스팅의 30%로 설정
-								maxPosting = Math.ceil(totalPosting*0.3);
-							}
-							Elements item = doc.select("item"); //포스팅 간략 정보
-							for(Element e : item){
+									smallProduct+"&display=100&start=1&target=blog&sort=sim").timeout(0).get();
+						}
+					}
+					if(doc.select("message").text().contains("Query limit exceeded")){
+						break label;
+					}
+					//소제품 관련 총 포스팅 개수
+					String totalPostingText = doc.select("total").text().trim();
+					if(totalPostingText.equals("")){
+						totalPostingText = "0";
+					}
+					totalPosting = Integer.parseInt(totalPostingText);
+					if(Math.ceil(totalPosting*0.3) < maxPosting){ //총 포스팅 개수의 30%가 50개 미만일 경우 
+																	 //포스팅 최대 개수를 총 포스팅의 30%로 설정
+						maxPosting = Math.ceil(totalPosting*0.3);
+					}
+					String smallProductId = smallProductList.get(i).getSmallProductId();
+					Elements postingList = doc.select("item"); //포스팅 간략 정보
+					int count = 0;
+					boolean flag = true;
+					while(flag){
+						try{
+							for(int k=count;k<postingList.size();k++){
+								if(exceptionCount > 3){
+									count = k+1;
+									exceptionCount = 0;
+								}else{
+									count = k;
+								}
+								preCountOfPosting = countOfPosting;
+								preInsertPostingCount = insertPostingCount;
+								preUpdatePostingCount = updatePostingCount;
+								preNotUpdatePostingCount = notUpdatePostingCount;
+								preDenyPostingCount = denyPostingCount;
+								preDelayConnectionCount = delayConnectionCount;
+								preDeletePostingCount = deletePostingCount;
+								preUpdatePostingStatusToTemptdead = updatePostingStatusToTemptdead;
+								preUpdateSmallProductStatusToConfirmedByAdmin = updateSmallProductStatusToConfirmedByAdmin;
+								preUpdatePostingStatusToConfirmed = updatePostingStatusToConfirmed;
+								Element postingInfo = postingList.get(k);
 								postingVO = new BlliPostingVO();
-								if(countOfPosting > maxPosting){
+								if(postingRank > maxPosting){
 									break;
 								}
-								countOfPosting++;
+								postingRank++;
 								
-								postingTitle = e.select("title").text();
+								postingTitle = postingInfo.select("title").text();
 								for(int j=0;j<regex.size();j++){ //태그 및 특수문자 제거
 									postingTitle = postingTitle.replaceAll(regex.get(j), "");
 								}
-								String bloggerLink = e.select("bloggerlink").text();
+								String bloggerLink = postingInfo.select("bloggerlink").text();
+								postingUrl = bloggerLink;
 								//네이버 블로그 포스팅이 아닐 경우 
 								//countOfPosting을 한개 늘려주고 while문 처음으로 이동(네이버 블로그가 아닐 경우 DB에 저장X)
 								if(!bloggerLink.contains("http://blog.naver.com")){ 
@@ -147,13 +181,13 @@ public class PostingScheduler {
 								}
 								postingVO.setPostingTitle(postingTitle); //postingTitle을 vo에 저장
 								postingVO.setPostingUrl(bloggerLink+"/");
-								postingVO.setSmallProductId(smallProductList.get(i).getSmallProductId()); //소제품ID를 vo에 저장
+								postingVO.setSmallProductId(smallProductId); //소제품ID를 vo에 저장
 								String postingStatus = postingDAO.getPostingStatus(postingVO);
 								
 								if(postingStatus == null){ //insert
 									try{
 										//openAPI를 통해 얻은 포스팅URL 연결
-										doc = Jsoup.connect(e.select("link").html()).timeout(1000).get(); 
+										doc = Jsoup.connect(postingInfo.select("link").html()).timeout(1000).get(); 
 										//frameSourceURL 불러와 설정
 										frameSourceUrl = "http://blog.naver.com" + doc.select("#mainFrame").attr("src"); 
 										doc = Jsoup.connect(frameSourceUrl).timeout(1000).get();
@@ -298,7 +332,7 @@ public class PostingScheduler {
 									
 									postingMediaCount = 0; //이미지 갯수 초기화
 									postingVO.setSmallProduct(smallProduct.replaceAll("%26", "&")); //소제품을 vo에 저장
-									postingVO.setPostingRank(countOfPosting); //포스팅 검색시 배열 순서(검색 순위)를 vo에 저장
+									postingVO.setPostingRank(postingRank); //포스팅 검색시 배열 순서(검색 순위)를 vo에 저장
 									
 									Elements reply = doc.select(".postre .pcol2");
 									for(Element el : reply){
@@ -324,46 +358,119 @@ public class PostingScheduler {
 									
 									postingDAO.insertPosting(postingVO);
 									insertPostingCount++;
+									countOfPosting++;
+									logger.warn(countOfPosting+" - "+smallProduct+" - "+postingUrl+" - insert");
 								}else if(postingStatus.equals("confirmed")){ //update
-									postingVO.setPostingRank(countOfPosting); //포스팅 검색시 배열 순서(검색 순위)를 vo에 저장
-									postingDAO.updatePosting(postingVO);
+									try{
+										//openAPI를 통해 얻은 포스팅URL 연결
+										doc = Jsoup.connect(postingInfo.select("link").html()).timeout(1000).get(); 
+										//frameSourceURL 불러와 설정
+										frameSourceUrl = "http://blog.naver.com" + doc.select("#mainFrame").attr("src"); 
+										doc = Jsoup.connect(frameSourceUrl).timeout(1000).get();
+									}catch(SocketTimeoutException exception){
+										delayConnectionCount++;
+										continue;
+									}
+									if(doc.select("#post-area script").html().contains("삭제되었거나 존재하지 않는 게시물입니다") || doc.select("#post-area script").html().contains("비공개 포스트 입니다")){
+										postingDAO.deletePosting(postingVO); // 포스팅 삭제
+										deletePostingCount++;
+										postingDAO.insertPermanentDeadPosting(postingVO); // dead테이블에 삽입
+										productDAO.subtractDbInsertPostingCount(smallProductId); // 해당 제품의 포스팅 개수 한개 감소
+										countOfPosting++;
+										logger.warn(countOfPosting+" - "+smallProduct+" - "+postingUrl+" - confirmed -> delete");
+										continue;
+									}
+									postingVO.setPostingRank(postingRank); //포스팅 검색시 배열 순서(검색 순위)를 vo에 저장
+									postingDAO.updatePosting(postingVO); // 포스팅 업데이트
 									updatePostingCount++;
-									//System.out.println(postingVO.getPostingUrl());
+									countOfPosting++;
+									logger.warn(countOfPosting+" - "+smallProduct+" - "+postingUrl+" - update");
+								}else if(postingStatus.equals("temptdead")){
+									postingDAO.updatePostingStatusToConfirmed(postingVO);
+									productDAO.addDbInsertPostingCount(smallProductId);
+									updatePostingStatusToConfirmed++;
+									countOfPosting++;
+									logger.warn(countOfPosting+" - "+smallProduct+" - "+postingUrl+" - temptdead -> confirmed");
 								}else{ //아무 작업도 하지 않음
 									notUpdatePostingCount++;
+									countOfPosting++;
+									logger.warn(countOfPosting+" - "+smallProduct+" - "+postingUrl+" - "+postingStatus);
 								}
 							} //for
-							//System.out.println("포스팅 카운트 : "+countOfPosting);
-							countOfAllPosting += countOfPosting;
-							productDAO.updateSearchTime(smallProductList.get(i).getSmallProductId());
-							end = System.currentTimeMillis();  //종료시간
-							//종료-시작=실행시간		
-							if((end-start)/1000.0 > 60*60*3){ //3시간을 초과하면 실행 중지
-								break label;
+							flag = false;
+						}catch(Exception exception){
+							exception.printStackTrace();
+							if(preCountOfPosting != countOfPosting){
+								countOfPosting--;
 							}
-						} //for
-						flag = false;
-					}catch(Exception e){
-						exceptionCount++;
-						if(!detailException.containsKey(postingVO.getPostingUrl())){
-							allExceptionCount++;
-							detailException.put(postingVO.getPostingUrl(), e.getMessage());
+							if(preInsertPostingCount != insertPostingCount){
+								insertPostingCount--;
+							}
+							if(preUpdatePostingCount != updatePostingCount){
+								updatePostingCount--;
+							}
+							if(preNotUpdatePostingCount != notUpdatePostingCount){
+								notUpdatePostingCount--;
+							}
+							if(preDenyPostingCount != denyPostingCount){
+								denyPostingCount--;
+							}
+							if(preDelayConnectionCount != delayConnectionCount){
+								delayConnectionCount--;
+							}
+							if(preDeletePostingCount != deletePostingCount){
+								deletePostingCount--;
+							}
+							if(preUpdatePostingStatusToTemptdead != updatePostingStatusToTemptdead){
+								updatePostingStatusToTemptdead--;
+							}
+							if(preUpdateSmallProductStatusToConfirmedByAdmin != updateSmallProductStatusToConfirmedByAdmin){
+								updateSmallProductStatusToConfirmedByAdmin--;
+							}
+							if(preUpdatePostingStatusToConfirmed != updatePostingStatusToConfirmed){
+								updatePostingStatusToConfirmed--;
+							}
+							exceptionCount++;
+							if(!detailException.containsKey(postingVO.getPostingUrl())){
+								allExceptionCount++;
+								detailException.put(postingVO.getPostingUrl(), exception.getMessage());
+							}
 						}
 					}
-				}
-				logger.info("총 소제품 개수 : "+smallProductList.size());
-				logger.info("총 포스팅 개수 : "+countOfAllPosting);
-				logger.info("insert한 포스팅 개수 : "+insertPostingCount);
-				logger.info("update한 포스팅 개수 : "+updatePostingCount);
-				logger.info("insert하지 않은 조건에 맞지 않는 포스팅 개수 : "+denyPostingCount);
-				logger.info("update하지 않은 포스팅 개수 : "+notUpdatePostingCount);
-				logger.info("시간지연되어 insert하지 않은 포스팅 개수 : "+delayConnectionCount);
-				logger.info("Exception 발생 횟수 : "+allExceptionCount);
+					productDAO.updateSearchTime(smallProductId);
+					postingVO.setSmallProductId(smallProductId);
+					postingVO.setPostingRank((int)maxPosting);
+					int updateResult = postingDAO.updatePostingStatusToTemptdead(postingVO);
+					updatePostingStatusToTemptdead += updateResult;
+					postingDAO.resetPostingUpdateColumn(smallProductId);
+					HashMap<String, Object> map = new HashMap<String, Object>();
+					map.put("smallProductId", smallProductId);
+					map.put("subtractCount", updateResult);
+					productDAO.subtractDbInsertPostingCountByTemptdead(map); // 해당 제품의 포스팅 개수를 포스팅 status가 temptdead로 변경된 숫자만큼 감소
+					updateSmallProductStatusToConfirmedByAdmin += productDAO.updateSmallProductStatusToConfirmedByAdmin(smallProductId);
+					end = System.currentTimeMillis();  //종료시간
+					//종료-시작=실행시간		
+					if((end-start)/1000.0 > 60*60){ //3시간을 초과하면 실행 중지
+						break label;
+					}
+				} //for
+				logger.error("총 소제품 개수 : "+smallProductList.size());
+				logger.error("총 포스팅 개수 : "+countOfPosting);
+				logger.error("insert한 포스팅 개수 : "+insertPostingCount);
+				logger.error("update한 포스팅 개수 : "+updatePostingCount);
+				logger.error("insert하지 않은 조건에 맞지 않는 포스팅 개수 : "+denyPostingCount);
+				logger.error("update하지 않은 포스팅 개수 : "+notUpdatePostingCount);
+				logger.error("시간지연되어 insert or update하지 않은 포스팅 개수 : "+delayConnectionCount);
+				logger.error("삭제된 포스팅 개수 : "+deletePostingCount); // 추가
+				logger.error("confirmed -> temptDead로 변경된 포스팅 개수 : "+updatePostingStatusToTemptdead); // 추가
+				logger.error("confirmed -> confirmedByAdmin으로 변경된 소제품 개수 : "+updateSmallProductStatusToConfirmedByAdmin); // 추가
+				logger.error("temptDead -> confirmed로 변경된 포스팅 개수 : "+updatePostingStatusToConfirmed); // 추가
+				logger.error("Exception 발생 횟수 : "+allExceptionCount);
 				Iterator<String> postingUrlList = detailException.keySet().iterator();
 				while(postingUrlList.hasNext()){
 					postingUrl = postingUrlList.next();
-					logger.info("Exception이 발생한 postingUrl : "+postingUrl);
-					logger.info("Exception 내용 : "+detailException.get(postingUrl));
+					logger.error("Exception이 발생한 postingUrl : "+postingUrl);
+					logger.error("Exception 내용 : "+detailException.get(postingUrl));
 				}
 				end = System.currentTimeMillis();  //종료시간
 				//종료-시작=실행시간		
@@ -371,15 +478,15 @@ public class PostingScheduler {
 					int hour = (int)Math.floor((((end-start)/1000.0)/60.0)/60);
 					int minute = (int)Math.floor(((end-start)/1000.0)/60-hour*60);
 					int second = (int)Math.ceil((end-start)/1000.0-minute*60);
-					logger.info("실행 시간  : "+hour+"시간 "+minute+"분 "+second+"초");
+					logger.error("실행 시간  : "+hour+"시간 "+minute+"분 "+second+"초");
 				}else if((end-start)/1000 > 60){
 					int minute = (int)Math.floor(((end-start)/1000.0)/60.0);
 					int second = (int)Math.ceil((end-start)/1000.0-minute*60);
-					logger.info("실행 시간  : "+minute+"분 "+second+"초");
+					logger.error("실행 시간  : "+minute+"분 "+second+"초");
 				}else{
-					logger.info("실행 시간  : "+(int)Math.ceil((end-start)/1000.0)+"초");
+					logger.error("실행 시간  : "+(int)Math.ceil((end-start)/1000.0)+"초");
 				}
-				logger.info("end : "+methodName);
+				logger.error("end : "+methodName);
 			} 
 		}catch (InterruptedException e) {
 			e.printStackTrace();

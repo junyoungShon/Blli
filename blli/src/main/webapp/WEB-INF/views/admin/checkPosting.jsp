@@ -38,6 +38,7 @@ $(document).ready(function(){
 		var scrapeCount = $(this).parent().parent().next().children().eq(1).children(".scrapeCount").text();
 		var likeCount = $(this).parent().parent().next().children().eq(1).children(".likeCount").text();
 		var dislikeCount = $(this).parent().parent().next().children().eq(1).children(".disLikeCount").text();
+		var postingTitle = $(this).parent().parent().prev().children().text();
 		$("#postingTitle").text(postingTitle);
 		$(".top_blog2 .scrapeCount").text(scrapeCount);
 		$(".top_blog2 .likeCount").text(likeCount);
@@ -74,7 +75,7 @@ $(document).ready(function(){
 			$.ajax({
 				url:"deletePosting.do",
 				type:"post",
-				data:"postingUrl="+postingUrl,
+				data:"postingUrl="+postingUrl+"postingTitle="+postingTitle,
 				success:function(){
 					alert("삭제 완료");
 					$("#postingPopUp").bPopup().close();

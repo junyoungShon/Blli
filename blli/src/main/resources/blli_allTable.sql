@@ -6,10 +6,11 @@ CREATE TABLE blli_member (
 	member_name          VARCHAR2(30) NOT NULL ,
 	member_state         NUMBER(2) default 0 ,
 	--recommending 		NUMBER(1) NOT NULL, 삭제 
-	authority            VARCHAR2(20)
+	authority            VARCHAR2(20),
+	mail_agree          NUMBER(1) default 0
 );
 -- 컬럼 추가(0 : 동의O, 1 : 동의X)
-alter table blli_member add(mail_agree NUMBER(1) default 0)
+-- alter table blli_member add(mail_agree NUMBER(1) default 0)
 	
 drop table blli_baby cascade constraint;
 CREATE TABLE blli_baby (
@@ -90,12 +91,14 @@ CREATE TABLE blli_small_product ( -- naver_shopping_link  VARCHAR2(300) NOT NULL
    detail_view_count number(8) default 0, --추가
    small_product_ranking number(4) default 0, --추가
    sns_share_count number(4) default 0,
+   small_product_update     VARCHAR2(5) default 'NO', -- 추가
    constraint fk_small_prod_mid_cate foreign key(mid_category, mid_category_id) references blli_mid_category(mid_category, mid_category_id) -- mid_category_id 추가
 );
+-- alter table blli_small_product add(small_product_update VARCHAR2(5) default 'NO');
 -- alter table blli_small_product add( sns_share_count number(4) default 0);
 -- alter table blli_small_product add( detail_view_count number(8) default 0);
 -- alter table blli_small_product add( product_db_insert_date date);
--- alter table blli_small_product add( small_Product_Ranking number(4));
+-- alter table blli_small_product add( small_product_ranking number(4));
 
 -- ALTER TABLE  blli_small_product  RENAME COLUMN naver_shopping_rank TO naver_shopping_rank;
 
@@ -122,11 +125,14 @@ CREATE TABLE blli_posting (
 	posting_reply_count      NUMBER(4) NOT NULL, -- 추가
 	posting_status            VARCHAR2(30) NOT NULL, -- 추가
 	posting_advertisement     VARCHAR2(5) default NULL, -- 추가
+	posting_update           VARCHAR2(5) default 'NO', -- 추가
 	constraint fk_posting_small_prod_id foreign key(small_product_id) references blli_small_product(small_product_id),
 	constraint pk_posting primary key(posting_url, small_product_id) -- 복합키로 변경
 );
 -- 컬럼 추가
-alter table blli_posting add(posting_advertisement VARCHAR2(5) default NULL);
+-- alter table blli_posting add(posting_update VARCHAR2(5) default 'NO');
+-- 컬럼 추가
+-- alter table blli_posting add(posting_advertisement VARCHAR2(5) default NULL);
 --신규 테이블 컬럼 추가
 -- alter table blli_posting add (posting_db_insert_date date);
 --기존 프라이머리키 제거
@@ -146,9 +152,11 @@ CREATE TABLE blli_small_prod_buy_link (
 	buy_link_option     VARCHAR2(30) NULL, -- 추가
 	seller               VARCHAR2(50) NOT NULL ,
 	buy_link_click_count NUMBER(10) default 0 ,
+	small_prod_buy_link_update VARCHAR2(5) default 'NO', -- 추가
 	constraint fk_small_buy_link_small foreign key(small_product_id) references blli_small_product(small_product_id), -- 변경,
 	constraint pk_blli_small_prod_buy_link primary key (small_product_id, seller) --복합키로 수정 -> seller로 다시 수정
 );
+-- alter table blli_small_prod_buy_link add(small_prod_buy_link_update VARCHAR2(5) default 'NO');
 -- 프라이머리키 변경
 
 drop table blli_small_product_photo cascade constraint;

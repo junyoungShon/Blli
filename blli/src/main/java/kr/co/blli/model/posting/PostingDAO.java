@@ -8,12 +8,7 @@ import kr.co.blli.model.vo.BlliPostingDisLikeVO;
 import kr.co.blli.model.vo.BlliPostingLikeVO;
 import kr.co.blli.model.vo.BlliPostingVO;
 
-import org.springframework.stereotype.Repository;
-
-@Repository
 public interface PostingDAO {
-
-	int getPostingDislikeCount = 0;
 
 	int updatePosting(BlliPostingVO postingVO);
 
@@ -54,5 +49,17 @@ public interface PostingDAO {
 	int getPostingLikeCount(BlliMemberScrapeVO scrapeVO);
 
 	int getPostingDislikeCount(BlliMemberScrapeVO scrapeVO);
+
+	void deletePosting(BlliPostingVO postingVO);
+
+	void insertPermanentDeadPosting(BlliPostingVO postingVO);
+
+	int updatePostingStatusToTemptdead(BlliPostingVO postingVO);
+
+	void updatePostingStatusToDeadBySmallProduct(String smallProductId);
+
+	void resetPostingUpdateColumn(String smallProductId);
+
+	void updatePostingStatusToConfirmed(BlliPostingVO postingVO);
 
 }

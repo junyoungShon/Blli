@@ -14,10 +14,10 @@ public class BlliFileDownLoader {
 	public String imgFileDownLoader(String url,String productId,String fileKind){
 		String localPath = null;
 		if(System.getProperty("os.name").contains("Windows")){
-			localPath = "C:\\Users\\junyoung\\git\\projectBlli2\\projectBlli2\\src\\main\\webapp\\scrawlImage\\";
+			localPath = "C:\\Users\\"+System.getProperty("user.name")+"\\git\\blli\\blli\\src\\main\\webapp\\scrawlImage\\";
 		}else{
 			//서버 환경일 경우 path
-			localPath = "/usr/bin/apache-tomcat-7.0.64/webapps/projectBlli2/scrawlImage";
+			localPath = "/usr/bin/apache-tomcat-7.0.64/webapps/blli/scrawlImage";
 		}
 		String fileEXT = url.substring(url.lastIndexOf(".")+1, url.lastIndexOf(".")+4).toLowerCase();
 		if(!fileEXT.equals("jpeg")){
