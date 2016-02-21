@@ -293,6 +293,14 @@ public class CategoryAndProductScheduler {
 				int updateSmallProductStatusToDead = 0;
 				int smallProductStatusDeadTodeadCount = 0;
 				int smallProductStatusDeadToUnconfirmed = 0;
+				int preSmallProductCount = 0;
+				int preInsertSmallProductCount = 0;
+				int preUpdateSmallProductCount = 0;
+				int preDenySmallProductCount = 0;
+				int preNotUpdateProductCount = 0;
+				int preUpdateSmallProductStatusToDead = 0;
+				int preSmallProductStatusDeadTodeadCount = 0;
+				int preSmallProductStatusDeadToUnconfirmed = 0;
 				int allExceptionCount = 0;
 				String smallProductId = "";
 				LinkedHashMap<String, String> detailException = new LinkedHashMap<String, String>();
@@ -329,6 +337,14 @@ public class CategoryAndProductScheduler {
 									}else{
 										count = j;
 									}
+									preSmallProductCount = smallProductCount;
+									preInsertSmallProductCount = insertSmallProductCount;
+									preUpdateSmallProductCount = updateSmallProductCount;
+									preDenySmallProductCount = denySmallProductCount;
+									preNotUpdateProductCount = notUpdateProductCount;
+									preUpdateSmallProductStatusToDead = updateSmallProductStatusToDead;
+									preSmallProductStatusDeadTodeadCount = smallProductStatusDeadTodeadCount;
+									preSmallProductStatusDeadToUnconfirmed = smallProductStatusDeadToUnconfirmed;
 									Element smallProductInfo = smallProductList.get(j);
 									naverShoppingRank++;
 									
@@ -410,6 +426,7 @@ public class CategoryAndProductScheduler {
 										
 										productDAO.insertSmallProduct(blliSmallProductVO);
 										smallProductCount++;
+										insertSmallProductCount++;
 										
 										Elements ele = doc.select("#price_compare tbody tr");
 										for(Element elem : ele){
@@ -436,7 +453,6 @@ public class CategoryAndProductScheduler {
 												logger.warn(smallProductCount+" - "+midCategory+" - "+smallProduct+" - "+seller+" - insert");
 											}
 										}
-										insertSmallProductCount++;
 									}else if(smallProductStatus.equals("confirmed")){
 										try{
 											doc = Jsoup.connect("http://openapi.naver.com/search?key="+key+"&query="+smallProduct+
@@ -493,6 +509,7 @@ public class CategoryAndProductScheduler {
 										
 										productDAO.updateSmallProduct(blliSmallProductVO);
 										smallProductCount++;
+										updateSmallProductCount++;
 										
 										doc = Jsoup.connect("http://shopping.naver.com/detail/detail.nhn?nv_mid="+
 										smallProductId+"&cat_id="+midCategoryId+"&frm=NVSHMDL&query=").timeout(0).get();
@@ -519,7 +536,6 @@ public class CategoryAndProductScheduler {
 											logger.warn(smallProductCount+" - "+midCategory+" - "+smallProduct+" - "+seller+" - update");
 										}
 										productDAO.deleteSmallProductBuyLink(smallProductId);
-										updateSmallProductCount++;
 									}else if(smallProductStatus.equals("dead")){
 										try{
 											doc = Jsoup.connect("http://openapi.naver.com/search?key="+key+"&query="+smallProduct+
@@ -586,6 +602,7 @@ public class CategoryAndProductScheduler {
 											
 											productDAO.updateSmallProductInfo(blliSmallProductVO);
 											smallProductCount++;
+											smallProductStatusDeadToUnconfirmed++;
 											
 											Elements ele = doc.select("#price_compare tbody tr");
 											for(Element elem : ele){
@@ -615,9 +632,9 @@ public class CategoryAndProductScheduler {
 										}else{ // insert -> unconfirmed -> confirmedbyadmin -> confirmed -> dead -> unconfirmed
 											productDAO.updateSmallProductStatusToUnconfirmed(smallProductId);
 											smallProductCount++;
+											smallProductStatusDeadToUnconfirmed++;
 											logger.warn(smallProductCount+" - "+midCategory+" - "+smallProduct+" - dead -> unconfirmed");
 										}
-										smallProductStatusDeadToUnconfirmed++;
 									}else{
 										smallProductCount++;
 										notUpdateProductCount++;
@@ -628,6 +645,30 @@ public class CategoryAndProductScheduler {
 							}catch(Exception exception){
 								exception.printStackTrace();
 								naverShoppingRank--;
+								if(preSmallProductCount != smallProductCount){
+									smallProductCount--;
+								}
+								if(preInsertSmallProductCount != insertSmallProductCount){
+									insertSmallProductCount--;
+								}
+								if(preUpdateSmallProductCount != updateSmallProductCount){
+									updateSmallProductCount--;
+								}
+								if(preDenySmallProductCount != denySmallProductCount){
+									denySmallProductCount--;
+								}
+								if(preNotUpdateProductCount != notUpdateProductCount){
+									notUpdateProductCount--;
+								}
+								if(preUpdateSmallProductStatusToDead != updateSmallProductStatusToDead){
+									updateSmallProductStatusToDead--;
+								}
+								if(preSmallProductStatusDeadTodeadCount != smallProductStatusDeadTodeadCount){
+									smallProductStatusDeadTodeadCount--;
+								}
+								if(preSmallProductStatusDeadToUnconfirmed != smallProductStatusDeadToUnconfirmed){
+									smallProductStatusDeadToUnconfirmed--;
+								}
 								exceptionCount++;
 								if(!detailException.containsKey(smallProductId)){
 									allExceptionCount++;

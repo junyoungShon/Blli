@@ -21,6 +21,10 @@ public class BlliLogVO {
 	private String updateSmallProductStatusToDead;
 	private String smallProductStatusDeadTodeadCount;
 	private String smallProductStatusDeadToUnconfirmed;
+	private String deletePostingCount;
+	private String updatePostingStatusToTemptdead;
+	private String updateSmallProductStatusToConfirmedByAdmin;
+	private String updatePostingStatusToConfirmed;
 	private ArrayList<BlliDetailException> detailException;
 	public BlliLogVO() {
 		super();
@@ -143,6 +147,33 @@ public class BlliLogVO {
 			String smallProductStatusDeadToUnconfirmed) {
 		this.smallProductStatusDeadToUnconfirmed = smallProductStatusDeadToUnconfirmed;
 	}
+	public String getDeletePostingCount() {
+		return deletePostingCount;
+	}
+	public void setDeletePostingCount(String deletePostingCount) {
+		this.deletePostingCount = deletePostingCount;
+	}
+	public String getUpdatePostingStatusToTemptdead() {
+		return updatePostingStatusToTemptdead;
+	}
+	public void setUpdatePostingStatusToTemptdead(
+			String updatePostingStatusToTemptdead) {
+		this.updatePostingStatusToTemptdead = updatePostingStatusToTemptdead;
+	}
+	public String getUpdateSmallProductStatusToConfirmedByAdmin() {
+		return updateSmallProductStatusToConfirmedByAdmin;
+	}
+	public void setUpdateSmallProductStatusToConfirmedByAdmin(
+			String updateSmallProductStatusToConfirmedByAdmin) {
+		this.updateSmallProductStatusToConfirmedByAdmin = updateSmallProductStatusToConfirmedByAdmin;
+	}
+	public String getUpdatePostingStatusToConfirmed() {
+		return updatePostingStatusToConfirmed;
+	}
+	public void setUpdatePostingStatusToConfirmed(
+			String updatePostingStatusToConfirmed) {
+		this.updatePostingStatusToConfirmed = updatePostingStatusToConfirmed;
+	}
 	@Override
 	public String toString() {
 		return "BlliLogVO [number=" + number + ", startTime=" + startTime
@@ -162,7 +193,13 @@ public class BlliLogVO {
 				+ ", smallProductStatusDeadTodeadCount="
 				+ smallProductStatusDeadTodeadCount
 				+ ", smallProductStatusDeadToUnconfirmed="
-				+ smallProductStatusDeadToUnconfirmed + ", detailException="
+				+ smallProductStatusDeadToUnconfirmed + ", deletePostingCount="
+				+ deletePostingCount + ", updatePostingStatusToTemptdead="
+				+ updatePostingStatusToTemptdead
+				+ ", updateSmallProductStatusToConfirmedByAdmin="
+				+ updateSmallProductStatusToConfirmedByAdmin
+				+ ", updatePostingStatusToConfirmed="
+				+ updatePostingStatusToConfirmed + ", detailException="
 				+ detailException + "]";
 	}
 }

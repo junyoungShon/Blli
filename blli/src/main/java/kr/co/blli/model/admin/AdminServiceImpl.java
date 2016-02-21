@@ -523,13 +523,23 @@ public class AdminServiceImpl implements AdminService{
 						vo.setUpdateCategoryCount(message.substring(message.lastIndexOf(":")+2));
 					}
 				}else if(message.startsWith("confirmed")){
-					vo.setUpdateSmallProductStatusToDead(message.substring(message.lastIndexOf(":")+2));
+					if(message.startsWith("confirmed -> temptDead")){
+						vo.setUpdatePostingStatusToTemptdead(message.substring(message.lastIndexOf(":")+2));
+					}else if(message.startsWith("confirmed -> confirmedByAdmin")){
+						vo.setUpdateSmallProductStatusToConfirmedByAdmin(message.substring(message.lastIndexOf(":")+2));
+					}else{
+						vo.setUpdateSmallProductStatusToDead(message.substring(message.lastIndexOf(":")+2));
+					}
 				}else if(message.startsWith("dead -> dead")){
 					vo.setSmallProductStatusDeadTodeadCount(message.substring(message.lastIndexOf(":")+2));
 				}else if(message.startsWith("dead -> unconfirmed")){
 					vo.setSmallProductStatusDeadToUnconfirmed(message.substring(message.lastIndexOf(":")+2));
+				}else if(message.startsWith("temptDead")){
+					vo.setUpdatePostingStatusToConfirmed(message.substring(message.lastIndexOf(":")+2));
 				}else if(message.startsWith("시간지연")){
 					vo.setDelayConnectionCount(message.substring(message.lastIndexOf(":")+2));
+				}else if(message.startsWith("삭제")){
+					vo.setDeletePostingCount(message.substring(message.lastIndexOf(":")+2));
 				}else if(message.startsWith("Exception 발생 횟수")){
 					vo.setExceptionCount(message.substring(message.lastIndexOf(":")+2));
 				}else if(message.startsWith("Exception이 발생한")){

@@ -86,7 +86,6 @@ public class PostingScheduler {
 				int denyPostingCount = 0;
 				int delayConnectionCount = 0;
 				int deletePostingCount = 0;
-				int insertPermanentDeadPostingCount = 0;
 				int updatePostingStatusToTemptdead = 0;
 				int updateSmallProductStatusToConfirmedByAdmin = 0;
 				int updatePostingStatusToConfirmed = 0;
@@ -356,7 +355,6 @@ public class PostingScheduler {
 										postingDAO.deletePosting(postingVO); // 포스팅 삭제
 										deletePostingCount++;
 										postingDAO.insertPermanentDeadPosting(postingVO); // dead테이블에 삽입
-										insertPermanentDeadPostingCount++;
 										productDAO.subtractDbInsertPostingCount(smallProductId); // 해당 제품의 포스팅 개수 한개 감소
 										countOfPosting++;
 										logger.warn(countOfPosting+" - "+smallProduct+" - "+postingUrl+" - confirmed -> delete");
@@ -414,10 +412,9 @@ public class PostingScheduler {
 				logger.error("update하지 않은 포스팅 개수 : "+notUpdatePostingCount);
 				logger.error("시간지연되어 insert or update하지 않은 포스팅 개수 : "+delayConnectionCount);
 				logger.error("삭제된 포스팅 개수 : "+deletePostingCount); // 추가
-				logger.error("영구 dead 포스팅 개수 : "+insertPermanentDeadPostingCount); // 추가
 				logger.error("confirmed -> temptDead로 변경된 포스팅 개수 : "+updatePostingStatusToTemptdead); // 추가
 				logger.error("confirmed -> confirmedByAdmin으로 변경된 소제품 개수 : "+updateSmallProductStatusToConfirmedByAdmin); // 추가
-				logger.error("tempDead -> confirmed로 변경된 포스팅 개수 : "+updatePostingStatusToConfirmed); // 추가
+				logger.error("temptDead -> confirmed로 변경된 포스팅 개수 : "+updatePostingStatusToConfirmed); // 추가
 				logger.error("Exception 발생 횟수 : "+allExceptionCount);
 				Iterator<String> postingUrlList = detailException.keySet().iterator();
 				while(postingUrlList.hasNext()){

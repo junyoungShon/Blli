@@ -23,6 +23,7 @@ table {
 }
 #subTable {
 	margin-top: 20px;
+	width: 90%;
 }
 #subTable2 {
 	margin-bottom: 20px;
@@ -61,6 +62,10 @@ $(document).ready(function(){
 		var updateSmallProductStatusToDead = $(this).parent().children("input[name=updateSmallProductStatusToDead]").val();
 		var smallProductStatusDeadTodeadCount = $(this).parent().children("input[name=smallProductStatusDeadTodeadCount]").val();
 		var smallProductStatusDeadToUnconfirmed = $(this).parent().children("input[name=smallProductStatusDeadToUnconfirmed]").val();
+		var deletePostingCount = $(this).parent().children("input[name=deletePostingCount]").val();
+		var updatePostingStatusToTemptdead = $(this).parent().children("input[name=updatePostingStatusToTemptdead]").val();
+		var updateSmallProductStatusToConfirmedByAdmin = $(this).parent().children("input[name=updateSmallProductStatusToConfirmedByAdmin]").val();
+		var updatePostingStatusToConfirmed = $(this).parent().children("input[name=updatePostingStatusToConfirmed]").val();
 		if(methodName == "insertBigCategory"){
 			table += "<tr>";
 			table += "<th>총 대분류 개수</th>";
@@ -126,8 +131,6 @@ $(document).ready(function(){
 			table += "<th>update한 포스팅 개수</th>";
 			table += "<th>insert하지 않은 조건에 맞지 않는 포스팅 개수</th>";
 			table += "<th>update하지 않은 포스팅 개수</th>";
-			table += "<th>시간지연되어 insert하지 않은 포스팅 개수</th>";
-			table += "<th>Exception 발생 횟수</th>";
 			table += "</tr>";
 			table += "<tr>";
 			table += "<td>"+highRankCategoryCount+"</td>";
@@ -136,6 +139,19 @@ $(document).ready(function(){
 			table += "<td>"+updateCategoryCount+"</td>";
 			table += "<td>"+denyPostingCount+"</td>";
 			table += "<td>"+notUpdatePostingCount+"</td>";
+			table += "</tr>";
+			table += "<tr>";
+			table += "<th>삭제된 포스팅 개수</th>";
+			table += "<th>confirmed -> temptDead로 변경된 포스팅 개수</th>";
+			table += "<th>confirmed -> confirmedByAdmin으로 변경된 소제품 개수</th>";
+			table += "<th>temptDead -> confirmed로 변경된 포스팅 개수</th>";
+			table += "<th>시간지연되어 insert하지 않은 포스팅 개수</th>";
+			table += "<th>Exception 발생 횟수</th>";
+			table += "<tr>";
+			table += "<td>"+deletePostingCount+"</td>";
+			table += "<td>"+updatePostingStatusToTemptdead+"</td>";
+			table += "<td>"+updateSmallProductStatusToConfirmedByAdmin+"</td>";
+			table += "<td>"+updatePostingStatusToConfirmed+"</td>";
 			table += "<td>"+delayConnectionCount+"</td>";
 			table += "<td>"+exceptionCount+"</td>";
 			table += "</tr>";
@@ -226,6 +242,10 @@ $(document).on("click", ".exceptionPopUp", function(){
 			<input type="hidden" value="${log.updateSmallProductStatusToDead}" name="updateSmallProductStatusToDead">
 			<input type="hidden" value="${log.smallProductStatusDeadTodeadCount}" name="smallProductStatusDeadTodeadCount">
 			<input type="hidden" value="${log.smallProductStatusDeadToUnconfirmed}" name="smallProductStatusDeadToUnconfirmed">
+			<input type="hidden" value="${log.deletePostingCount}" name="deletePostingCount">
+			<input type="hidden" value="${log.updatePostingStatusToTemptdead}" name="updatePostingStatusToTemptdead">
+			<input type="hidden" value="${log.updateSmallProductStatusToConfirmedByAdmin}" name="updateSmallProductStatusToConfirmedByAdmin">
+			<input type="hidden" value="${log.updatePostingStatusToConfirmed}" name="updatePostingStatusToConfirmed">
 			<c:forEach items="${log.detailException}" var="exceptionInfo">
 				<input type="hidden" value="${exceptionInfo.categoryId}" name="categoryId">
 				<input type="hidden" value="${exceptionInfo.exceptionContent}" name="exceptionContent">
