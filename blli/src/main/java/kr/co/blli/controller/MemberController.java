@@ -539,8 +539,12 @@ public class MemberController {
 	  * @return
 	  */
 	@RequestMapping("goCalenderPage.do")
-	public String calendar(BlliMemberVO blliMemberVO){
-		return "calendar_calendarPage";
+	public ModelAndView calendar(String memberId){
+		System.out.println("MemberController: "+memberId);
+		List<BlliScheduleVO> memberScheduleList = memberService.getMemberScheduleList(memberId);
+		
+		System.out.println("MemberController: "+memberScheduleList);
+		return new ModelAndView("calendar_calendarPage", "memberScheduleList", memberScheduleList);
 	}
 	
 	

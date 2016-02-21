@@ -27,7 +27,7 @@ public interface MemberDAO {
 	public void changeRecommendingBaby(BlliBabyVO blliBabyVO);
 
 	
-	//용호 메소드 영역
+	//용호 작성 영역
 	public BlliMemberVO findMemberInfoById(String memberId);
 	public BlliMailVO findMailSubjectAndContentByMailForm(String mailForm);
 	public List<BlliMemberVO> getMemberHavingBabyAgeChangedList();
@@ -40,9 +40,13 @@ public interface MemberDAO {
 	public BlliScheduleVO selectSchedule(BlliScheduleVO bsvo);
 	public void updateSchedule(BlliScheduleVO bsvo);
 	public void deleteSchedule(BlliScheduleVO bsvo);
+	public List<BlliScheduleVO> getMemberScheduleList(String memberId);
 
+	
+	
+	//현석 작성 영역
 	public int denySendEmail(String memberEmail);
-
 	public List<BlliMemberScrapeVO> getScrapeInfoByMemberId(BlliMemberVO memberVO);
+
 
 }

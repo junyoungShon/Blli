@@ -144,28 +144,5 @@
 	<!-- spring-task 설정 -->
 	<task:scheduler id="jobScheduler" pool-size="10" />
 	<task:annotation-driven scheduler="jobScheduler" />
-	
-	
-	<!-- quartz를 이용한 스케줄링 -->
-	<!-- <bean id="mailScheduler" class="kr.co.blli.model.scheduler.MailScheduler"/>
-	 
-	<bean id="jobDetailFactoryBean"
-		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="mailScheduler" />
-		<property name="targetMethod" value="schedulerTester" />
-		<property name="concurrent" value="false" />
-	</bean>
-	
-	<bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-   		<property name="jobDetail" ref="jobDetailFactoryBean" />
-	</bean>
-	
-	<bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
-		<property name="triggers">
-			<list>
-				<ref bean="cronTrigger" />
-			</list>
-		</property>
-	</bean> -->
 
 </beans>

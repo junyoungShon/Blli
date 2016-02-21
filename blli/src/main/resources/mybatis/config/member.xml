@@ -149,6 +149,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		from blli_schedule
 		where schedule_id = #{scheduleId}
 	</select>
+	<!-- 회원ID로 회원의 일정 목록을 가져온다 -->
+	<select id="getMemberScheduleList" resultMap="bsvRM">
+		select schedule_id, member_id, baby_name, to_char(schedule_date) as schedule_date, schedule_title, schedule_content, schedule_location, schedule_check_state
+		from blli_schedule
+		where member_id = #{value}
+	</select>
 	<!-- 용호 쿼리 끝 -->
 	
 	

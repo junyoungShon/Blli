@@ -47,6 +47,11 @@ public interface MemberService {
 	public void updateSchedule(BlliScheduleVO bsvo);
 	public BlliScheduleVO selectSchedule(BlliScheduleVO bsvo);
 	public int denySendEmail(String memberEmail);
+	public List<BlliScheduleVO> getMemberScheduleList(String memberId);
 
+	
+	
+	//현석 작성 영역
 	public ArrayList<BlliMemberScrapeVO> getScrapeInfoByMemberId(BlliMemberVO memberVO);
+
 }

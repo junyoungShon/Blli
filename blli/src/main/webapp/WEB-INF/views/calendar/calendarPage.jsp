@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %> 
 <script type="text/javascript">
 	
 	var dateObj = new Date();
@@ -28,22 +29,47 @@
 	    var d1 = (y+(y-y%4)/4-(y-y%100)/100+(y-y%400)/400 + m*2+(m*5-m*5%9)/9-(m<3?y%4||y%100==0&&y%400?2:3:4))%7;
 	    var numberOfDaysOfThisMonth = (m*9-m*9%8)/8%2+(m==2?y%4||y%100==0&&y%400?28:29:30);
 	    var totalCellNumber = 35;
+	    var thisYear = y-2000;
+	    var thisMonth = m;
+	    var thisDay = d;
 	    
+	    if(thisMonth<10) {
+			thisMonth = "0" + thisMonth;
+		}
+		
 	    for (i = 0; i < totalCellNumber; i++) {
 	    	
 	        if (i%7==0) {
 	        	calendarText += '</tr>\n<tr>';
 	        }
-	    	
+	        
 	        if (i < d1 || i >= d1+numberOfDaysOfThisMonth) {
 	        	calendarText += '<td><p></p><p></p><p></p><p></p></td>';
 	        } else {
+	        	var scheduleText = '';
+	        	//일정 표시
+	        	for(var j=0;j<"${fn:length(memberScheduleList)}";j++) {
+	        		if(i<10) {
+	        			i = "0" + i;
+	        		}
+	        		var thisDate = thisYear + "/" + thisMonth + "/" + i;
+		        	if(thisDate==$("input[name=scheduleDate]")[j].value) {
+		        		scheduleText += '<p class="cal_bg'+(j+1)+'">' + $("input[name=scheduleTitle]")[j].value + '</p>';
+		        	}
+		        	if(i<10) {
+	        			i = i.substring(1,2);
+	        		}
+	        	}
+				
+	        	i = i*1;
+
 	        	//오늘 일자 표시
 	        	if((i+1-d1)==day) {
-	        		calendarText += '<td class="calendarDateCell" bgcolor="#f2f2f2"; ' + (i%7 ? '' : ' style="color:red;"') + '><p class="fl cal_day">' + (i+1-d1) +'</p><p></p><p></p><p></p></td>';
+	        		calendarText += '<td class="calendarDateCell" bgcolor="#f2f2f2"; ' + (i%7 ? '' : ' style="color:red;"') 
+	        						+ '><p class="cal_day">' + (i+1-d1) + '</p>' + scheduleText +'</td>';
 		        } else {
 		        	calendarText += '<td class="calendarDateCell"' + (i%7 ? '' : ' style="color:red;"') + ((i-6)%7 ? '' : ' style="color:blue;"')
-		        					+ '><p class="fl cal_day">' + (i+1-d1) + '</p><p></p><p></p><p></p></td>';
+		        					+ '><p class="cal_day">' + (i+1-d1) + '</p>' + scheduleText +'</td>';
 		        }
 	        }
 	        
@@ -68,17 +94,24 @@
 	
 	function showAddSchduleForm(thisYear, thisMonth, thisDay) {
 		
+		if(thisMonth<10) {
+			thisMonth = "0" + thisMonth;
+		}
+		if(thisDay<10) {
+			thisDay = "0" + thisDay;
+		}
+		
 		var thisDate = thisYear+"년 " + thisMonth+"월 "+thisDay+"일"
 		
 		var memberBabyNameList = "";
 		for(var i=0;i<$("input[name=blliBabyVOList]").length;i++) {
-			memberBabyNameList += '<td><input type="checkbox" name="babyName" value="'+$("input[name=blliBabyVOList]")[i].value+'" style="height:12px;">'
-								+ $("input[name=blliBabyVOList]")[i].value + '</td>';
+			memberBabyNameList += '<td><input type="checkbox" name="babyName" value="'+$("input[name=babyName]")[i].value+'" style="height:12px;">'
+								+ $("input[name=babyName]")[i].value + '</td>';
 		}
 		
 		var showAddSchduleFormText = '<div class="cal_plus_form"><div class="cal_plus_ti">아이 일정 추가</div>'
 										+'<table><tr><th colspan="3">누구의 일정인가요?</th></tr>'
-										+'<tr>'+memberBabyNameList+'</tr>'
+										+'<tr>'+memberBabyNameList+'<input type="hidden" name="scheduleDate" value="'+thisYear+thisMonth+thisDay+'"></tr>'
 										+'<tr><th colspan="2">날짜</th><th>장소입력</th></tr>'
 										+'<tr><td colspan="2">'+thisDate+'</td>'
 										+'<td><input type="text" name="scheduleLocation" size="10"></td></tr>'
@@ -219,8 +252,6 @@
 		
 		var scheduleIdVal = $(this).parent().parent().parent().siblings().eq(7).children().siblings().eq(1).val();
 		
-		alert(scheduleIdVal);
-		
 		if(locationVal=="") {
 			alert("일정 장소를 입력해주세요.");
 			return;
@@ -244,16 +275,9 @@
 			cache: false,
 			success: function(bsvo){
 				
-				alert(bsvo.memberId);
-				alert(bsvo.scheduleDate);
-				alert(bsvo.scheduleLocation);
-				alert(bsvo.scheduleTitle);
-				alert(bsvo.scheduleContent);
-				alert(bsvo.babyName);
-				
 				//1의 자리라서 앞에 0이 붙어있었다면 지워준다.
-				var thisYear = bsvo.scheduleDate.substring(0,4);
-				var thisMonth = bsvo.scheduleDate.substring(4,6);
+				var thisYear = "20"+bsvo.scheduleDate.substring(0,2);
+				var thisMonth = bsvo.scheduleDate.substring(3,5);
 				if(thisMonth.indexOf('0')==0) {
 					thisMonth = thisMonth.substring(1);
 				}
@@ -261,6 +285,8 @@
 				if(thisDay.indexOf('0')==0) {
 					thisDay = thisDay.substring(1);
 				}
+				
+				bsvo.scheduleDate = thisYear + bsvo.scheduleDate.substring(3,5) + bsvo.scheduleDate.substring(6,8);
 				
 				//1씩 곱해서 string으로 변한 숫자를 다시 number로 만든다
 				thisYear = thisYear*1;
@@ -277,10 +303,14 @@
 	
 </script>
 
-<body>
+<body background="./img/calendar_bgimg_winter.jpg" style="background-size:100% 100%;">
 
 	<c:forEach items="${sessionScope.blliMemberVO.blliBabyVOList}" var="blliBabyVOList">
-		<input type="hidden" name="blliBabyVOList" value="${blliBabyVOList.babyName}">
+		<input type="hidden" name="babyName" value="${blliBabyVOList.babyName}">
+	</c:forEach>
+	<c:forEach items="${memberScheduleList}" var="memberScheduleList">
+		<input type="hidden" name="scheduleDate" value="${memberScheduleList.scheduleDate}">
+		<input type="hidden" name="scheduleTitle" value="${memberScheduleList.scheduleTitle}">
 	</c:forEach>
 
     <div class="jbContent">

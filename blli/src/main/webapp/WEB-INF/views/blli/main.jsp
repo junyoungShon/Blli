@@ -335,10 +335,10 @@
 		    var imgWidthActual = div.offsetHeight / imgAspect;
 		    var imgWidthToBe = div.offsetHeight / divAspect;
 		    var marginLeft = -Math.round((imgWidthActual - imgWidthToBe) / 2);
-		    img.style.cssText = 'width: auto; height: 100%; margin-left: 0;'+ marginLeft + 'px;';
+		    //img.style.cssText = 'width: auto; height: 100%; margin-left: 0;'+ marginLeft + 'px;';
 		} else {
 		    // 이미지가 div보다 길쭉한 경우 가로를 div에 맞추고 세로를 잘라낸다
-		    img.style.cssText = 'width: 100%; height: auto; margin-left: 0;';
+		    //img.style.cssText = 'width: 100%; height: auto; margin-left: 0;';
 		}
 		
 	});

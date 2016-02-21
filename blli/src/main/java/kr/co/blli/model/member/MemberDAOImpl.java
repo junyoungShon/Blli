@@ -74,7 +74,7 @@ public class MemberDAOImpl implements MemberDAO{
 	
 	
 	
-	//용호 메소드 영역
+	//용호 작성 영역
 	@Override
 	public BlliMemberVO findMemberInfoById(String memberId) {
 		return sqlSessionTemplate.selectOne("member.findMemberInfoById", memberId);
@@ -118,7 +118,13 @@ public class MemberDAOImpl implements MemberDAO{
 	public void deleteSchedule(BlliScheduleVO bsvo) {
 		sqlSessionTemplate.update("member.deleteSchedule", bsvo);
 	}
+	@Override
+	public List<BlliScheduleVO> getMemberScheduleList(String memberId) {
+		return sqlSessionTemplate.selectList("member.getMemberScheduleList", memberId);
+	}
 
+	
+	//현석 작성 영역
 	@Override
 	public int denySendEmail(String memberEmail) {
 		return sqlSessionTemplate.update("member.denySendEmail", memberEmail);
@@ -128,6 +134,7 @@ public class MemberDAOImpl implements MemberDAO{
 	public List<BlliMemberScrapeVO> getScrapeInfoByMemberId(BlliMemberVO memberVO) {
 		return sqlSessionTemplate.selectList("member.getScrapeInfoByMemberId", memberVO);
 	}
+
 
 
 }

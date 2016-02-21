@@ -467,4 +467,9 @@ public class MemberServiceImpl implements MemberService {
 		return (ArrayList<BlliMemberScrapeVO>)memberDAO.getScrapeInfoByMemberId(memberVO);
 	}
 
+	@Override
+	public List<BlliScheduleVO> getMemberScheduleList(String memberId) {
+		return memberDAO.getMemberScheduleList(memberId);
+	}
+
 }
