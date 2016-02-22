@@ -207,7 +207,8 @@ public class SearchController {
 			BlliSmallProductVO blliSmallProductVO = productService.productDibChecker(blliMemberVO.getMemberId(),(BlliSmallProductVO) smallProductInfo.get("smallProduct"));
 			((BlliSmallProductVO) smallProductInfo.get("smallProduct")).setIsDib(blliSmallProductVO.getIsDib());
 		}
-		
+		ArrayList<BlliPostingVO> postingSlideList = postingService.getPostingSlideListInfo(smallProductId);
+		mav.addObject("postingSlideList", postingSlideList);
 		mav.addObject("smallProductInfo", smallProductInfo);
 		mav.addObject("blliPostingVOList", postingList);
 		mav.addObject("blliMemberVO",blliMemberVO);
@@ -304,4 +305,5 @@ public class SearchController {
 	public void smallProductRankingMaker() throws ParseException{
 		postingMarker.smallProductRankingMaker();
 	}
+	
 }

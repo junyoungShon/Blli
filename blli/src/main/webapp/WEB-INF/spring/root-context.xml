@@ -23,9 +23,9 @@
 	<context:component-scan base-package="kr.ac.kaist.swrc.jhannanum"/>
 	<bean class="kr.ac.kaist.swrc.jhannanum.hannanum.Workflow" autowire="default">
 		<!-- 서버용 -->
-		<!-- <constructor-arg name="baseDir" value="/usr/bin/apache-tomcat-7.0.64/webapps/projectBlli2/WEB-INF/classes/jhannanum"/> -->
+		<!-- <constructor-arg name="baseDir" value="/usr/bin/apache-tomcat-7.0.64/webapps/blli/WEB-INF/classes/jhannanum"/> -->
 		<!-- 로컬용 -->
-		<constructor-arg name="baseDir" value="C:\Users\Park\git\projectBlli2\projectBlli2\src\main\resources\jhannanum"/>
+		<constructor-arg name="baseDir" value="C:\Users\용호\git\blli\blli\src\main\resources\jhannanum"/>
 	</bean>
 	
 	<!-- model 계층 빈 설정 , AOP설정 비워둠 -->

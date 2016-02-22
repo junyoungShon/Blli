@@ -85,8 +85,8 @@ public class PostingServiceImpl implements PostingService {
 		String startPosting = currentPage+"";
 		String endPosting = (currentPage+5)+"";
 		if(currentPage!=1){
-			startPosting = (currentPage*5+1)+"";
-			endPosting = (currentPage+5)+"";
+			startPosting = ((currentPage-1)*5+1)+"";
+			endPosting = ((currentPage-1)*5+5)+"";
 		}
 		System.out.println(smallProductId);
 		paraMap.put("startPosting", startPosting);
@@ -165,6 +165,11 @@ public class PostingServiceImpl implements PostingService {
 		postingVO.setPostingLikeCount(postingDAO.getPostingLikeCount(scrapeVO));
 		postingVO.setPostingDislikeCount(postingDAO.getPostingDislikeCount(scrapeVO));
 		return postingVO;
+	}
+
+	@Override
+	public ArrayList<BlliPostingVO> getPostingSlideListInfo(String smallProductId) {
+		return (ArrayList<BlliPostingVO>)postingDAO.getPostingSlideListInfo(smallProductId);
 	}
 
 }

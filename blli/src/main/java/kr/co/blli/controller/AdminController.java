@@ -47,8 +47,13 @@ public class AdminController {
 	 * @throws IOException
 	 */
 	@RequestMapping("unconfirmedPosting.do")
-	public ModelAndView unconfirmedPosting(String pageNo) throws IOException{
-		return new ModelAndView("admin/unconfirmedPosting","resultList",adminService.unconfirmedPosting(pageNo));
+	public ModelAndView unconfirmedPosting(String pageNo, String category, String searchWord) throws IOException{
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("admin/unconfirmedPosting");
+		mav.addObject("resultList", adminService.unconfirmedPosting(pageNo, category, searchWord));
+		mav.addObject("category", category);
+		mav.addObject("searchWord", searchWord);
+		return mav;
 	}	
 	/**
 	 * 

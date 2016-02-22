@@ -23,4 +23,6 @@ public interface PostingService {
 
 	abstract BlliPostingVO getPostingInfo(BlliMemberScrapeVO blliMemberScrapeVO, String memberId);
 
+	abstract ArrayList<BlliPostingVO> getPostingSlideListInfo(String smallProductId);
+
 }

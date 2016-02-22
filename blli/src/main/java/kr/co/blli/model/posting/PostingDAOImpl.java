@@ -129,4 +129,8 @@ public class PostingDAOImpl implements PostingDAO{
 	public void updatePostingStatusToConfirmed(BlliPostingVO postingVO) {
 		sqlSessionTemplate.update("posting.updatePostingStatusToConfirmed", postingVO);
 	}
+	@Override
+	public List<BlliPostingVO> getPostingSlideListInfo(String smallProductId) {
+		return sqlSessionTemplate.selectList("posting.getPostingSlideListInfo", smallProductId);
+	}
 }

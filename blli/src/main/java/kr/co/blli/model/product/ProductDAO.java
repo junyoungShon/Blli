@@ -1,6 +1,5 @@
 package kr.co.blli.model.product;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -177,5 +176,11 @@ public interface ProductDAO {
 	void updateSmallProductInfo(BlliSmallProductVO blliSmallProductVO);
 
 	void addDbInsertPostingCount(String smallProductId);
+
+	List<String> getDibSmallProductId(String memberId);
+
+	BlliSmallProductVO getDibSmallProduct(String smallProductId);
+
+	List<BlliSmallProductBuyLinkVO> getDibSmallProductBuyLink(String smallProductId);
 
 }

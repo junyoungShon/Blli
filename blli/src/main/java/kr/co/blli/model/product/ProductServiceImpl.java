@@ -442,5 +442,26 @@ public class ProductServiceImpl implements ProductService{
 		String totalPostingNum = df.format(Integer.parseInt(productDAO.selectTotalProductNum()));
 		return totalPostingNum;
 	}
+	@Override
+	public ArrayList<BlliSmallProductVO> getDibSmallProduct(String memberId) {
+		ArrayList<String> dibSmallProductId = (ArrayList<String>)productDAO.getDibSmallProductId(memberId);
+		ArrayList<BlliSmallProductVO> dibSmallProductList = new ArrayList<BlliSmallProductVO>();
+		for(int i=0;i<dibSmallProductId.size();i++){
+			BlliSmallProductVO dibSmallProduct = new BlliSmallProductVO();
+			dibSmallProduct = productDAO.getDibSmallProduct(dibSmallProductId.get(i));
+			ArrayList<BlliSmallProductBuyLinkVO> dibSmallProductBuyLink = (ArrayList<BlliSmallProductBuyLinkVO>)productDAO.getDibSmallProductBuyLink(dibSmallProductId.get(i));
+			dibSmallProduct.setBlliSmallProductBuyLinkVOList(dibSmallProductBuyLink);
+			int minPrice = Integer.parseInt(dibSmallProductBuyLink.get(0).getBuyLinkPrice());
+			for(int j=0;j<dibSmallProductBuyLink.size();j++){
+				if(minPrice > Integer.parseInt(dibSmallProductBuyLink.get(j).getBuyLinkPrice())){
+					minPrice = Integer.parseInt(dibSmallProductBuyLink.get(j).getBuyLinkPrice());
+				}
+			}
+			dibSmallProduct.setMinPrice(String.valueOf(minPrice));
+			dibSmallProduct.setIsDib(1);
+			dibSmallProductList.add(dibSmallProduct);
+		}
+		return dibSmallProductList;
+	}
 
 }

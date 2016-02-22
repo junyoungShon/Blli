@@ -194,8 +194,10 @@ html { overflow-y: scroll; }
   background: #EEE;
 } */
 
-.gallery img {
-  display: block;
+#slide_img_list img {
   height: 150px;
   padding: 5px;
+}
+#slide_img_list {
+	white-space: nowrap;
 }

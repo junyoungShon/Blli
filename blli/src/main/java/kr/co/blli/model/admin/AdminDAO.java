@@ -74,5 +74,13 @@ public interface AdminDAO {
 
 	void updatePostingStatusToconfirmed(String smallProductId);
 
+	List<BlliPostingVO> unconfirmedPostingBySearchSmallProduct(String pageNo, String searchWord);
+
+	List<BlliPostingVO> unconfirmedPostingBySearchsmallProductId(String pageNo, String searchWord);
+
+	int totalUnconfirmedPostingBySearchSmallProduct(String searchWord);
+
+	int totalUnconfirmedPostingBySearchSmallProductId(String searchWord);
+
 }
  

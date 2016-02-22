@@ -62,4 +62,6 @@ public interface PostingDAO {
 
 	void updatePostingStatusToConfirmed(BlliPostingVO postingVO);
 
+	List<BlliPostingVO> getPostingSlideListInfo(String smallProductId);
+
 }

@@ -97,9 +97,39 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		) where page = #{pageNo}
 	</select>
 	
+	<select id="unconfirmedPostingBySearchSmallProduct" resultMap="bpvRM">
+		select posting_url, posting_title, posting_content, small_product, small_product_id from(
+			select ceil(rownum/5) as page, posting_url, posting_title, posting_content, small_product, small_product_id from(
+				select count(*) over (partition by posting_url) as count_posting_url, posting_url, posting_title, 
+				posting_content, small_product, small_product_id from blli_posting where posting_status = 'unconfirmed' and small_product like '%' || #{searchWord} || '%' order by small_product asc
+			) where count_posting_url = 1
+		) where page = #{pageNo}
+	</select>
+	
+	<select id="unconfirmedPostingBySearchsmallProductId" resultMap="bpvRM">
+		select posting_url, posting_title, posting_content, small_product, small_product_id from(
+			select ceil(rownum/5) as page, posting_url, posting_title, posting_content, small_product, small_product_id from(
+				select count(*) over (partition by posting_url) as count_posting_url, posting_url, posting_title, 
+				posting_content, small_product, small_product_id from blli_posting where posting_status = 'unconfirmed' and small_product_id = #{searchWord} order by small_product asc
+			) where count_posting_url = 1
+		) where page = #{pageNo}
+	</select>
+	
 	<select id="totalUnconfirmedPosting" resultType="int">
 		select count(*) from(
 			select count(*) over (partition by posting_url) as count_posting_url from blli_posting where posting_status = 'unconfirmed'
+		) where count_posting_url = 1
+	</select>
+	
+	<select id="totalUnconfirmedPostingBySearchSmallProduct" resultType="int">
+		select count(*) from(
+			select count(*) over (partition by posting_url) as count_posting_url from blli_posting where posting_status = 'unconfirmed' and small_product like '%' || #{searchWord} || '%'
+		) where count_posting_url = 1
+	</select>
+	
+	<select id="totalUnconfirmedPostingBySearchSmallProductId" resultType="int">
+		select count(*) from(
+			select count(*) over (partition by posting_url) as count_posting_url from blli_posting where posting_status = 'unconfirmed' and small_product_id = #{searchWord}
 		) where count_posting_url = 1
 	</select>
 	

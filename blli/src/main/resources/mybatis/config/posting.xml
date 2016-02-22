@@ -118,6 +118,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<update id="updatePostingStatusToConfirmed">
 		update blli_posting set posting_status = 'confirmed' where posting_url like '%' || #{postingUrl} || '%' and posting_title = #{postingTitle}
 	</update>
+	
+	<select id="getPostingSlideListInfo" resultMap="bpvRM">
+		select posting_url, small_product, small_product_id, posting_photo_link, posting_author 
+		from blli_posting where small_product_id = #{smallProductId} and posting_status = 'confirmed'
+		order by posting_score desc 
+	</select>
 	<!-- 현석 쿼리 끝 -->
 	
 	<!-- 준영쿼리 시작 -->

@@ -59,5 +59,7 @@ public interface ProductService {
 
 	public String selectTotalProductNum();
 
+	public ArrayList<BlliSmallProductVO> getDibSmallProduct(String memberId);
+
 
 }

@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<c:if test="${requestScope['javax.servlet.forward.request_uri']!='${initParam.root}member_goMain.do'}">
+<c:if test="${requestScope['javax.servlet.forward.request_uri']!='/blli/member_goMain.do'}">
 	<form action="${initParam.root}searchSmallProduct.do" method="get">
 		<div class="jbMenu">
 		    <div class="in_fr">
@@ -21,11 +21,12 @@
 		</div>
 	</form>
 </c:if>
-<c:if test="${requestScope['javax.servlet.forward.request_uri']=='${initParam.root}member_goMain.do'}">
+<c:if test="${requestScope['javax.servlet.forward.request_uri']=='/blli/member_goMain.do'}">
 	<form action="${initParam.root}searchSmallProduct.do" method="get">
 		<div class="main_top">
 			<div class="in_fr">
 				<div class="top_nav">
+					<a href="${initParam.root}goDibPage.do">찜</a>   ㅣ
 					<a href="${initParam.root}goScrapePage.do">스크랩</a>   ㅣ
 					<a href="${initParam.root}goModifyMemberInfoPage.do">회원정보수정</a>   ㅣ   
 					<a href="${initParam.root}goModifyBabyInfoPage.do">아이정보수정</a>   ㅣ  

@@ -19,7 +19,7 @@ public interface AdminService {
 	
 	public void sendMail(String memberId, String mailForm) throws FileNotFoundException, URISyntaxException, UnsupportedEncodingException, MessagingException;
 	
-	abstract ListVO unconfirmedPosting(String pageNo) throws IOException;
+	abstract ListVO unconfirmedPosting(String pageNo, String category, String searchWord) throws IOException;
 	
 	abstract ListVO postingListWithSmallProducts(String pageNo) throws IOException;
 	

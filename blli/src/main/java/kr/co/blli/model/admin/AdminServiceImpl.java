@@ -114,11 +114,22 @@ public class AdminServiceImpl implements AdminService{
 	 * @return
 	 * @throws IOException
 	 */
-	public ListVO unconfirmedPosting(String pageNo) throws IOException {
+	public ListVO unconfirmedPosting(String pageNo, String category, String searchWord) throws IOException {
 		if(pageNo == null || pageNo == ""){
 			pageNo = "1";
 		}
-		ArrayList<BlliPostingVO> postingList = (ArrayList<BlliPostingVO>)adminDAO.unconfirmedPosting(pageNo);
+		ArrayList<BlliPostingVO> postingList = new ArrayList<BlliPostingVO>();
+		int total = 0;
+		if(category == null || category.equals("")){
+			postingList = (ArrayList<BlliPostingVO>)adminDAO.unconfirmedPosting(pageNo);
+			total = adminDAO.totalUnconfirmedPosting();
+		}else if(category.equals("smallProduct")){
+			postingList = (ArrayList<BlliPostingVO>)adminDAO.unconfirmedPostingBySearchSmallProduct(pageNo, searchWord);
+			total = adminDAO.totalUnconfirmedPostingBySearchSmallProduct(searchWord);
+		}else if(category.equals("smallProductId")){
+			postingList = (ArrayList<BlliPostingVO>)adminDAO.unconfirmedPostingBySearchsmallProductId(pageNo, searchWord);
+			total = adminDAO.totalUnconfirmedPostingBySearchSmallProductId(searchWord);
+		}
 		for(int i=0;i<postingList.size();i++){
 			String url = postingList.get(i).getPostingUrl();
 			String smallProduct = postingList.get(i).getSmallProduct();
@@ -153,7 +164,6 @@ public class AdminServiceImpl implements AdminService{
 			}
 			postingList.get(i).setImageList(imgList); //포스팅에 등록된 모든 이미지 vo에 저장
 		}
-		int total = adminDAO.totalUnconfirmedPosting();
 		BlliPagingBean paging = new BlliPagingBean(total, Integer.parseInt(pageNo));
 		ListVO lvo = new ListVO(postingList, paging);
 		return lvo;
