@@ -344,8 +344,8 @@ public class ProductDAOImpl implements ProductDAO{
 	}
 
 	@Override
-	public List<BlliSmallProductVO> getOtherSmallProductList(HashMap<String, Object> map) {
-		return sqlSessionTemplate.selectList("product.getOtherSmallProductList", map);
+	public List<BlliSmallProductVO> getOtherSmallProductList(BlliSmallProductVO smallProductVO) {
+		return sqlSessionTemplate.selectList("product.getOtherSmallProductList", smallProductVO);
 	}
 
 	@Override

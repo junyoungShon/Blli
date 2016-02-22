@@ -540,7 +540,8 @@ $.ajaxSetup({ cache: false });
 			<c:forEach items="${requestScope.postingSlideList}" var="postingList">
 				<div style="height: 175px; display: inline-block;">
 					<img src="${postingList.postingPhotoLink}" alt="${requestScope.smallProductInfo.smallProduct.smallProduct}" class="slideImg">
-					<div onmouseover="this.style.color='yellow'" onmouseout="this.style.color='#ff7f50'" style="cursor:pointer; text-overflow: ellipsis; height: 10px;text-align: right; color: #ff7f50; font-weight: bold; font-family: 'Nanum Barun Gothic';" 
+					<div onmouseover="this.style.color='yellow'" onmouseout="this.style.color='#ff7f50'" 
+					style="cursor:pointer; text-overflow: ellipsis; height: 10px; color: #ff7f50; font-weight: bold; font-family: 'Nanum Barun Gothic'; text-align: right;" 
 					data-tooltip-text="블로그 구경가기" onclick="goBlogPosting('${postingList.postingUrl}','${postingList.smallProductId}')">
 						${postingList.postingAuthor}
 					</div>	

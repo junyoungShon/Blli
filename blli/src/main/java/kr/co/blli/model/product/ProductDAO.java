@@ -103,7 +103,7 @@ public interface ProductDAO {
 
 	List<BlliSmallProductBuyLinkVO> getSmallProductBuyLink(String smallProductId);
 
-	List<BlliSmallProductVO> getOtherSmallProductList(HashMap<String, Object> map);
+	List<BlliSmallProductVO> getOtherSmallProductList(BlliSmallProductVO smallProductVO);
 
 	List<BlliSmallProductVO> searchSmallProductList(HashMap<String, String> map);
 

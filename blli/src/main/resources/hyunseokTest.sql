@@ -47,3 +47,21 @@ update blli_posting set posting_status = 'unconfirmed' where posting_status = 'c
 
 select small_product_id from blli_member_dibs where member_id = 'gonipal@naver.com';
 
+select small_product_id from blli_small_product where small_product_status = 'confirmedbyadmin';
+
+select * from blli_small_product where small_product_status = 'confirmed';
+
+select * from blli_small_product where small_product_id = '6733513412';
+
+select * from blli_small_product where small_product  = '똘똘이 옹알이아기';
+
+update blli_posting set posting_status = 'unconfirmed' where posting_status = 'confirmed';
+
+update blli_small_product set small_product_status = 'unconfirmed' where small_product_status = 'confirmed' or small_product_status = 'confirmedbyadmin';
+
+update blli_small_product set db_insert_posting_count = 0;
+
+update blli_posting set posting_status = 'unconfirmed' where posting_status = 'dead';
+
+select * from blli_mid_category;
+

@@ -91,8 +91,8 @@ public class AdminDAOImpl implements AdminDAO{
 		sqlSessionTemplate.update("admin.updateMidCategoryWhenToUseMax", vo);
 	}
 	@Override
-	public String getMidCategory(String smallProductId) {
-		return sqlSessionTemplate.selectOne("admin.getMidCategory", smallProductId);
+	public String getMidCategoryId(String smallProductId) {
+		return sqlSessionTemplate.selectOne("admin.getMidCategoryId", smallProductId);
 	}
 	@Override
 	public void updatePostingCount(BlliPostingVO vo) {
@@ -172,5 +172,9 @@ public class AdminDAOImpl implements AdminDAO{
 	@Override
 	public int totalUnconfirmedPostingBySearchSmallProductId(String searchWord) {
 		return sqlSessionTemplate.selectOne("admin.totalUnconfirmedPostingBySearchSmallProductId", searchWord);
+	}
+	@Override
+	public BlliSmallProductVO getSmallProductWhenToUse(String midCategoryId) {
+		return sqlSessionTemplate.selectOne("admin.getSmallProductWhenToUse", midCategoryId);
 	}
 }

@@ -124,11 +124,11 @@ public class AdminServiceImpl implements AdminService{
 			postingList = (ArrayList<BlliPostingVO>)adminDAO.unconfirmedPosting(pageNo);
 			total = adminDAO.totalUnconfirmedPosting();
 		}else if(category.equals("smallProduct")){
-			postingList = (ArrayList<BlliPostingVO>)adminDAO.unconfirmedPostingBySearchSmallProduct(pageNo, searchWord);
-			total = adminDAO.totalUnconfirmedPostingBySearchSmallProduct(searchWord);
+			postingList = (ArrayList<BlliPostingVO>)adminDAO.unconfirmedPostingBySearchSmallProduct(pageNo, searchWord.trim());
+			total = adminDAO.totalUnconfirmedPostingBySearchSmallProduct(searchWord.trim());
 		}else if(category.equals("smallProductId")){
-			postingList = (ArrayList<BlliPostingVO>)adminDAO.unconfirmedPostingBySearchsmallProductId(pageNo, searchWord);
-			total = adminDAO.totalUnconfirmedPostingBySearchSmallProductId(searchWord);
+			postingList = (ArrayList<BlliPostingVO>)adminDAO.unconfirmedPostingBySearchsmallProductId(pageNo, searchWord.trim());
+			total = adminDAO.totalUnconfirmedPostingBySearchSmallProductId(searchWord.trim());
 		}
 		for(int i=0;i<postingList.size();i++){
 			String url = postingList.get(i).getPostingUrl();
@@ -354,7 +354,13 @@ public class AdminServiceImpl implements AdminService{
 					adminDAO.updatePostingCount(vo);
 				}
 			}
-			adminDAO.updateSmallProductStatus(smallProductId);
+			int updateResult = adminDAO.updateSmallProductStatus(smallProductId);
+			if(updateResult != 0){
+				String midCategoryId = adminDAO.getMidCategoryId(smallProductId);
+				BlliSmallProductVO smallProductVO = adminDAO.getSmallProductWhenToUse(midCategoryId);
+				smallProductVO.setMidCategoryId(midCategoryId);
+				adminDAO.updateMidCategoryWhenToUse(smallProductVO);
+			}
 		}
 		insertAndUpdateWordCloud(blliPostingVOList);
 	}
@@ -373,7 +379,7 @@ public class AdminServiceImpl implements AdminService{
 			BlliSmallProductVO vo = new BlliSmallProductVO();
 			vo.setSmallProductId(smallProductInfo.get(i).get("smallProductId").toString());
 			vo.setSmallProduct(smallProductInfo.get(i).get("smallProduct").toString());
-			vo.setMidCategory(adminDAO.getMidCategory(smallProductInfo.get(i).get("smallProductId").toString()));
+			vo.setMidCategoryId(adminDAO.getMidCategoryId(smallProductInfo.get(i).get("smallProductId").toString()));
 			if(delete.equals("삭제")){
 				adminDAO.deleteSmallProduct(vo.getSmallProductId());
 			}else{
@@ -385,15 +391,15 @@ public class AdminServiceImpl implements AdminService{
 				}else{
 					adminDAO.updatePostingStatusToconfirmed(vo.getSmallProductId());
 					int updateResult = adminDAO.updateSmallProductStatus(vo.getSmallProductId());
+					if(smallProductWhenToUseMin == null || smallProductWhenToUseMin == ""){
+						smallProductWhenToUseMin = "0";
+					}
+					if(smallProductWhenToUseMax == null || smallProductWhenToUseMax == ""){
+						smallProductWhenToUseMax = "36";
+					}
+					vo.setSmallProductWhenToUseMin(Integer.parseInt(smallProductWhenToUseMin));
+					vo.setSmallProductWhenToUseMax(Integer.parseInt(smallProductWhenToUseMax));
 					if(updateResult == 1){
-						if(smallProductWhenToUseMin == null || smallProductWhenToUseMin == ""){
-							smallProductWhenToUseMin = "0";
-						}
-						if(smallProductWhenToUseMax == null || smallProductWhenToUseMax == ""){
-							smallProductWhenToUseMax = "36";
-						}
-						vo.setSmallProductWhenToUseMin(Integer.parseInt(smallProductWhenToUseMin));
-						vo.setSmallProductWhenToUseMax(Integer.parseInt(smallProductWhenToUseMax));
 						adminDAO.updateMidCategoryWhenToUse(vo);
 					}
 					if(vo.getSmallProduct() == null || vo.getSmallProduct() == ""){

@@ -205,18 +205,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		update blli_small_product set small_product = #{smallProduct} where small_product_id = #{smallProductId}
 	</update>
 	
-	<select id="getMidCategory" resultType="String">
-		select mid_category from blli_small_product where small_product_id = #{smallProductId}
+	<select id="getMidCategoryId" resultType="String">
+		select mid_category_id from blli_small_product where small_product_id = #{smallProductId}
 	</select>
 	
 	<update id="updateMidCategoryWhenToUseMin">
 		update blli_mid_category set mid_category_whentouse_min = #{smallProductWhenToUseMin} 
-		where mid_category_whentouse_min > ${smallProductWhenToUseMin} or mid_category_whentouse_min is null and mid_category = #{midCategory}
+		where mid_category_whentouse_min > #{smallProductWhenToUseMin} or mid_category_whentouse_min is null and mid_category_id = #{midCategoryId}
 	</update>
 	
 	<update id="updateMidCategoryWhenToUseMax">
 		update blli_mid_category set mid_category_whentouse_max = #{smallProductWhenToUseMax} 
-		where ${smallProductWhenToUseMax} > mid_category_whentouse_max or mid_category_whentouse_max is null and mid_category = #{midCategory}
+		where #{smallProductWhenToUseMax} > mid_category_whentouse_max or mid_category_whentouse_max is null and mid_category_id = #{midCategoryId}
 	</update>
 	
 	<select id="checkPosting" resultMap="bpvRM">
@@ -232,7 +232,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<update id="updateSmallProductStatus">
-		update blli_small_product set small_product_status = 'confirmed' where small_product_id = #{smallProductId} and db_insert_posting_count >= 5 and small_product_status = 'confirmedbyadmin' 
+		update blli_small_product set small_product_status = 'confirmed' where small_product_id = #{smallProductId} and db_insert_posting_count >= 4 and small_product_status = 'confirmedbyadmin' 
 	</update>
 	
 	<insert id="insertPermanentDeadPosting">
@@ -242,6 +242,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<update id="updatePostingStatusToconfirmed">
 		update blli_posting set posting_status = 'confirmed' where small_product_id = #{smallProductId} and posting_status = 'deadbysmallproduct'
 	</update>
+	
+	<select id="getSmallProductWhenToUse" resultMap="bspvRM">
+		select min(small_product_whentouse_min) as small_product_whentouse_min, max(small_product_whentouse_max) as small_product_whentouse_max 
+		from blli_small_product where mid_category_id = #{midCategoryId} and small_product_status = 'confirmed'
+	</select>
 	<!-- 현석 쿼리 끝 -->
 	<!-- 준영 쿼리 시작 -->
 	<!-- 소제품 명으로 본문 불러오는 메서드 -->
