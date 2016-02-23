@@ -27,6 +27,7 @@ import kr.co.blli.model.vo.BlliMidCategoryVO;
 import kr.co.blli.model.vo.BlliPagingBean;
 import kr.co.blli.model.vo.BlliPostingVO;
 import kr.co.blli.model.vo.BlliSmallProductVO;
+import kr.co.blli.model.vo.BlliUserExceptionLogVO;
 import kr.co.blli.model.vo.BlliWordCloudVO;
 import kr.co.blli.model.vo.ListVO;
 import kr.co.blli.utility.BlliFileDownLoader;
@@ -588,6 +589,64 @@ public class AdminServiceImpl implements AdminService{
 			System.err.println(e); // 에러가 있다면 메시지 출력
 			System.exit(1);
 		}
+		return list;
+	}
+	/**
+	  * @Method Name : checkUserExceptionLog
+	  * @Method 설명 :
+	  * @작성일 : 2016. 2. 23.
+	  * @작성자 : junyoung
+	  * @return
+	 * @throws IOException 
+	 */
+	@Override
+	public ArrayList<BlliUserExceptionLogVO> checkUserExceptionLog() throws IOException {
+		ArrayList<BlliUserExceptionLogVO> list = new ArrayList<BlliUserExceptionLogVO>();
+		BlliUserExceptionLogVO vo = null;
+		ArrayList<BlliDetailException> detailException = new ArrayList<BlliDetailException>();
+		BlliDetailException exceptionVO = null;
+		int number = 1;
+		BufferedReader in = null;
+		try {
+			String localPath = null;
+			if(System.getProperty("os.name").contains("Windows")){
+				localPath = "C:\\Users\\"+System.getProperty("user.name")+"\\git\\blli\\blli\\src\\main\\webapp\\logFile\\errorByUser.log";
+			}else{
+				//서버 환경일 경우 path
+				localPath = "/usr/bin/apache-tomcat-7.0.64/webapps/logFile/errorByUser.log";
+			}
+			in = new BufferedReader(new FileReader(localPath));
+			String message;
+			StringBuffer exceptionContent = new StringBuffer(); 
+			while ((message = in.readLine()) != null) {
+				if(message.startsWith("------------------Start------------------------")){
+					vo = new BlliUserExceptionLogVO();
+					vo.setNumber(number++);
+				}else if(message.startsWith("발생일자")){
+					vo.setOccuredTime(message.substring(message.indexOf(":")+2));
+				}else if(message.startsWith("발생한에러")){
+					exceptionContent.append(message.substring(message.indexOf(":")+2));
+				}else if(message.startsWith("발생메서드")){
+					vo.setMethodName(message.substring(message.indexOf(":")+2));
+				}else if(message.startsWith("------------------End--------------------------")){
+					vo.setEndBorder(message.substring(message.indexOf(":")+2));
+					vo.setExceptionContent(exceptionContent.toString());
+					list.add(vo);
+					exceptionContent.setLength(0);
+				}else if(message.startsWith("발생클래스")){
+					vo.setClassName(message.substring(message.indexOf(":")+2));
+				}else{
+					exceptionContent.append(message);
+				}
+			}
+		} catch (IOException e) {
+			System.err.println(e); // 에러가 있다면 메시지 출력
+			System.exit(1);
+		}finally{
+			if(in!=null)
+				in.close();
+		}
+		System.out.println(list);
 		return list;
 	}
 	/**

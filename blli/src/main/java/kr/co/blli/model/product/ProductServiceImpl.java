@@ -109,6 +109,7 @@ public class ProductServiceImpl implements ProductService{
 			}
 		}
 		for(int i=0;i<blliSmallProductVOList.size();i++){
+			blliSmallProductVOList.get(i).setMinPrice(productDAO.selectMinPriceBySmallProductId(blliSmallProductVOList.get(i).getSmallProductId()));
 			if(blliSmallProductVOList.get(i).getMinPrice()!=null){
 				DecimalFormat df = new DecimalFormat("#,##0");
 				blliSmallProductVOList.get(i).setMinPrice(df.format(Integer.parseInt(blliSmallProductVOList.get(i).getMinPrice())));
@@ -117,6 +118,7 @@ public class ProductServiceImpl implements ProductService{
 		}
 		return blliSmallProductVOList;
 	}
+	
 	/**
 	  * @Method Name : selectPostingBySmallProductList
 	  * @Method 설명 : <!극혐주의!> 포스팅 관련 이므로 여기있으면 안되지만 구조상 여기왔다 . 상의해보자

@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<c:if test="${requestScope['javax.servlet.forward.request_uri']!='/blli/member_goMain.do'}">
+<c:if test="${requestScope['javax.servlet.forward.request_uri']!='/projectBlli3/member_goMain.do'}">
 	<form action="${initParam.root}searchSmallProduct.do" method="get">
 		<div class="jbMenu">
 		    <div class="in_fr">
@@ -21,7 +21,7 @@
 		</div>
 	</form>
 </c:if>
-<c:if test="${requestScope['javax.servlet.forward.request_uri']=='/blli/member_goMain.do'}">
+<c:if test="${requestScope['javax.servlet.forward.request_uri']=='/projectBlli3/member_goMain.do'}">
 	<form action="${initParam.root}searchSmallProduct.do" method="get">
 		<div class="main_top">
 			<div class="in_fr">

@@ -33,9 +33,12 @@ public class BlliAop {
 			Calendar cal = Calendar.getInstance();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd hh:mm:ss");
 			String datetime = sdf.format(cal.getTime());
-			logger.error("발생한에러 : "+e.getMessage());
-			logger.error("발생메서드 : "+point.getSignature().getName());
+			logger.error("------------------Start------------------------");
 			logger.error("발생일자 : "+datetime);
+			logger.error("발생한에러 : "+e.toString());
+			logger.error("발생메서드 : "+point.getSignature().getName());
+			logger.error("발생클래스 : "+point.getTarget().getClass().getName().substring(point.getTarget().getClass().getName().lastIndexOf(".")));
+			logger.error("------------------End--------------------------");
 		}
 		return retValue;
 	}

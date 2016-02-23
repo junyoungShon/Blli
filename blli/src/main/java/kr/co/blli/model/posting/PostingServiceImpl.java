@@ -14,6 +14,7 @@ import kr.co.blli.model.vo.BlliMemberVO;
 import kr.co.blli.model.vo.BlliPostingDisLikeVO;
 import kr.co.blli.model.vo.BlliPostingLikeVO;
 import kr.co.blli.model.vo.BlliPostingVO;
+import kr.co.blli.model.vo.BlliSmallProductVO;
 
 import org.springframework.stereotype.Service;
 
@@ -71,9 +72,27 @@ public class PostingServiceImpl implements PostingService {
 	}
 
 	@Override
-	public ArrayList<BlliPostingVO> searchPostingListInProductDetail(String searchWord) {
-		return (ArrayList<BlliPostingVO>)postingDAO.searchPostingListInProductDetail(searchWord);
+	public ArrayList<BlliPostingVO> searchPostingListInProductDetail(
+			String smallProductId, String memberId, String pageNo) {
+		//파라미터로 사용할 맵을 생성하고, 페이지 번호를 넣는다.
+		HashMap<String, String> paraMap = new HashMap<String, String>();
+		int currentPage = Integer.parseInt(pageNo);
+		String startPosting = currentPage+"";
+		String endPosting = (currentPage+5)+"";
+		if(currentPage!=1){
+			startPosting = ((currentPage-1)*5+1)+"";
+			endPosting = ((currentPage-1)*5+5)+"";
+		}
+		System.out.println(smallProductId);
+		paraMap.put("startPosting", startPosting);
+		paraMap.put("endPosting", endPosting);
+		paraMap.put("smallProductId", smallProductId);
+		//점수순 노출 , 상태(confirmed) , 포스팅 대상 소제품 등을 기준으로 출력<!극혐주의!> 포스팅 관련 이므로 여기있으면 안되지만 구조상 여기왔다 . 상의해보자
+		List<BlliPostingVO> blliPostingVOList = postingDAO.selectPostingBySmallProductId(paraMap);
+		
+		return (ArrayList<BlliPostingVO>) blliPostingVOList;
 	}
+
 
 	@Override
 	public ArrayList<BlliPostingVO> searchPostingListInProductDetail(
@@ -101,37 +120,6 @@ public class PostingServiceImpl implements PostingService {
 				memberId = blliMemberVO.getMemberId();
 			}
 		}
-		//포스팅을 가져올 때 해당 회원이 포스팅을 스크램,좋아요,싫어요 했는지 여부를 파악해준다.
-		BlliMemberScrapeVO blliMemberScrapVO = new BlliMemberScrapeVO();
-		blliMemberScrapVO.setMemberId(memberId);
-		BlliPostingLikeVO blliPostingLikeVO = new BlliPostingLikeVO();
-		blliPostingLikeVO.setMemberId(memberId);
-		BlliPostingDisLikeVO blliPostingDisLikeVO = new BlliPostingDisLikeVO();
-		blliPostingDisLikeVO.setMemberId(memberId);
-		
-		for(int i=0;i<blliPostingVOList.size();i++){
-			blliMemberScrapVO.setPostingUrl(blliPostingVOList.get(i).getPostingUrl());
-			blliMemberScrapVO.setSmallProductId(blliPostingVOList.get(i).getSmallProductId());
-			blliPostingLikeVO.setPostingUrl(blliPostingVOList.get(i).getPostingUrl());
-			blliPostingLikeVO.setSmallProductId(blliPostingVOList.get(i).getSmallProductId());
-			blliPostingDisLikeVO.setPostingUrl(blliPostingVOList.get(i).getPostingUrl());
-			blliPostingDisLikeVO.setSmallProductId(blliPostingVOList.get(i).getSmallProductId());
-			//스크랩 여부 판단.
-			if(postingDAO.selectThisPostingScrape(blliMemberScrapVO)!=0)
-				blliPostingVOList.get(i).setIsScrapped(1);
-			else
-				blliPostingVOList.get(i).setIsScrapped(0);
-			//좋아요 여부판단
-			if(postingDAO.selectThisPostingLike(blliPostingLikeVO)!=0)
-				blliPostingVOList.get(i).setIsLike(1);
-			else
-				blliPostingVOList.get(i).setIsLike(0);
-			//싫어요 여부판단
-			if(postingDAO.selectThisPostingDisLike(blliPostingDisLikeVO)!=0)
-				blliPostingVOList.get(i).setIsDisLike(1);
-			else
-				blliPostingVOList.get(i).setIsDisLike(0);
-		}
 		return (ArrayList<BlliPostingVO>) blliPostingVOList;
 	}
 
@@ -143,28 +131,39 @@ public class PostingServiceImpl implements PostingService {
 	}
 
 	@Override
-	public BlliPostingVO getPostingInfo(BlliMemberScrapeVO blliMemberScrapeVO, String memberId) {
-		BlliPostingVO postingVO = postingDAO.getPostingInfo(blliMemberScrapeVO);
-		postingVO.setSmallProductId(blliMemberScrapeVO.getSmallProductId());
-		BlliMemberScrapeVO scrapeVO = new BlliMemberScrapeVO();
-		scrapeVO.setMemberId(memberId);
-		scrapeVO.setPostingUrl(postingVO.getPostingUrl());
-		scrapeVO.setSmallProductId(blliMemberScrapeVO.getSmallProductId());
-		postingVO.setIsScrapped(postingDAO.selectThisPostingScrape(scrapeVO));
-		BlliPostingLikeVO postingLikeVO = new BlliPostingLikeVO();
-		postingLikeVO.setMemberId(memberId);
-		postingLikeVO.setPostingUrl(postingVO.getPostingUrl());
-		postingLikeVO.setSmallProductId(blliMemberScrapeVO.getSmallProductId());
-		postingVO.setIsLike(postingDAO.selectThisPostingLike(postingLikeVO));
-		BlliPostingDisLikeVO postingDisLikeVO = new BlliPostingDisLikeVO();
-		postingDisLikeVO.setMemberId(memberId);
-		postingDisLikeVO.setPostingUrl(postingVO.getPostingUrl());
-		postingDisLikeVO.setSmallProductId(blliMemberScrapeVO.getSmallProductId());
-		postingVO.setIsDisLike(postingDAO.selectThisPostingDisLike(postingDisLikeVO));
-		postingVO.setPostingScrapeCount(postingDAO.getPostingScrapeCount(scrapeVO));
-		postingVO.setPostingLikeCount(postingDAO.getPostingLikeCount(scrapeVO));
-		postingVO.setPostingDislikeCount(postingDAO.getPostingDislikeCount(scrapeVO));
+	public BlliPostingVO searchPostingByUserScrape(BlliPostingVO blliPostingVO, String memberId) {
+		BlliPostingVO postingVO = postingDAO.getPostingInfo(blliPostingVO);
+		postingVO.setSmallProductId(blliPostingVO.getSmallProductId());
 		return postingVO;
+	}
+	/**
+	  * @Method Name : selectPostingBySmallProductList
+	  * @Method 설명 : 포스팅 관련 이므로 여기있으면 안되지만 구조상 여기왔다 . 상의해보자
+	  * @작성일 : 2016. 1. 21.
+	  * @작성자 : junyoung
+	  * @param blliMidCategoryVOList
+	  * @return
+	 */
+	@Override
+	public List<BlliPostingVO> searchPostingBySmallProductList(List<BlliSmallProductVO> blliSmallProductVOList,String memberId,String pageNum) {
+		List<BlliPostingVO> blliPostingVOList = new ArrayList<BlliPostingVO>();
+		//파라미터로 사용할 맵을 생성하고, 페이지 번호를 넣는다.
+		HashMap<String, String> paraMap = new HashMap<String, String>();
+		paraMap.put("pageNum", pageNum);
+		//점수순 노출 , 상태(confirmed) , 포스팅 대상 소제품 등을 기준으로 출력<!극혐주의!> 포스팅 관련 이므로 여기있으면 안되지만 구조상 여기왔다 . 상의해보자
+		for(int i=0;i<blliSmallProductVOList.size();i++){
+			System.out.println(blliSmallProductVOList);
+			if(blliSmallProductVOList.get(i)!=null){
+				paraMap.put("smallProductId", blliSmallProductVOList.get(i).getSmallProductId());
+				List<BlliPostingVO> tempList = postingDAO.selectPostingBySmallProductList(paraMap);
+				if(tempList!=null){
+					for(int j=0;j<tempList.size();j++){
+						blliPostingVOList.add(tempList.get(j));
+					}
+				}
+			}
+		}
+		return blliPostingVOList;
 	}
 
 	@Override

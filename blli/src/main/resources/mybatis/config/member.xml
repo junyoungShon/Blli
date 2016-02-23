@@ -45,7 +45,30 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  		<result property="smallProductId" column="small_product_id"/>
  		<result property="scrapeTime" column="scrape_time"/>
  	</resultMap>
- 	
+ 	 	<!-- BlliPostingVO Result Map 설정 -->
+ 	<resultMap type="blliPostingVO" id="bpvRM">
+ 		<result property="postingUrl" column="posting_url"/>
+ 		<result property="postingTitle" column="posting_title"/>
+ 		<result property="postingSummary" column="posting_summary"/>
+ 		<result property="postingContent" column="posting_content"/>
+ 		<result property="postingScore" column="posting_score"/>
+ 		<result property="postingLikeCount" column="posting_like_count"/>
+ 		<result property="postingDislikeCount" column="posting_dislike_count"/>
+ 		<result property="postingMediaCount" column="posting_media_count"/>
+ 		<result property="postingPhotoLink" column="posting_photo_link"/>
+ 		<result property="postingStatus" column="posting_status"/>
+ 		<result property="postingTotalResidenceTime" column="posting_total_residence_time"/>
+ 		<result property="postingViewCount" column="posting_view_count"/>
+ 		<result property="postingScrapeCount" column="posting_scrape_count"/>
+ 		<result property="postingAuthor" column="posting_author"/>
+ 		<result property="postingDate" column="posting_date"/>
+ 		<result property="postingRank" column="posting_rank"/>
+ 		<result property="postingReplyCount" column="posting_reply_count"/>
+ 		<result property="smallProduct" column="small_product"/>
+ 		<result property="smallProductId" column="small_product_id"/>
+ 		<result property="postingDbInsertDate" column="posting_Db_Insert_Date"/>
+ 		<result property="midCategory" column="mid_category"/>
+ 	</resultMap>
  	<!-- 준영 작성 쿼리 -->
  	<!-- id로 회원의 존재 여부를 찾습니다. -->
 	<select id="findMemberByIdForLogin" resultMap="bmvRM">
@@ -164,7 +187,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		update blli_member set mail_agree = 1 where member_email = #{memberEmail}
 	</update>
 	
-	<select id="getScrapeInfoByMemberId" resultMap="bmsvRM">
+	<select id="getScrapeInfoByMemberId" resultMap="bpvRM">
 		select posting_url, small_product_id from blli_member_scrape where member_id = #{memberId}
 	</select>
 	<!-- 현석 쿼리 끝 -->

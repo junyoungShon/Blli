@@ -192,4 +192,10 @@ public class AdminController {
 		ArrayList<BlliMemberVO> list = (ArrayList<BlliMemberVO>)adminService.checkMember();
 		return new ModelAndView("admin/checkMember", "memberList", list);
 	}
+	@RequestMapping("checkUserExceptionLog.do")
+	public ModelAndView checkUserExceptionLog() throws IOException{
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("admin/userExceptionLog");
+		return mav.addObject("list", adminService.checkUserExceptionLog());
+	}
 }

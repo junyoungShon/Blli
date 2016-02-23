@@ -394,6 +394,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectTotalProductNum" resultType="String">
 		select count(*) from blli_small_product
 	</select>
+	<select id="selectMinPriceBySmallProductId" resultType="String">
+		select min(buy_link_price) from blli_small_prod_buy_link where small_product_id = #{value}
+	</select>
 	<!-- 끝 -->
 		
 	

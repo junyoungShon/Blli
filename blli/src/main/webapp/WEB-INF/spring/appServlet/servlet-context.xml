@@ -19,8 +19,8 @@
 	<context:component-scan base-package="kr.co.blli.controller" />
 	<mvc:interceptors>
 		<mvc:interceptor>
-			<mvc:mapping path="/*"/>
-			<bean class="kr.co.blli.controller.BlliInterceptor"></bean>
+			<mvc:mapping path="/goSmallProductDetailView.do"/>
+			<bean class="kr.co.blli.controller.SnsLinkPermitInterceptor"></bean>
 		</mvc:interceptor>
 		<!-- 캐쉬저장을 안한다. 이를 통해서 폼 전송 후 뒤로 가기를 봉쇄한다. -->
 		<bean id="webContentInterceptor" class="org.springframework.web.servlet.mvc.WebContentInterceptor">

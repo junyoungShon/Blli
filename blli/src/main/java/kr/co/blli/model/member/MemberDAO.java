@@ -6,6 +6,7 @@ import kr.co.blli.model.vo.BlliBabyVO;
 import kr.co.blli.model.vo.BlliMailVO;
 import kr.co.blli.model.vo.BlliMemberScrapeVO;
 import kr.co.blli.model.vo.BlliMemberVO;
+import kr.co.blli.model.vo.BlliPostingVO;
 import kr.co.blli.model.vo.BlliScheduleVO;
 
 public interface MemberDAO {
@@ -46,7 +47,7 @@ public interface MemberDAO {
 	
 	//현석 작성 영역
 	public int denySendEmail(String memberEmail);
-	public List<BlliMemberScrapeVO> getScrapeInfoByMemberId(BlliMemberVO memberVO);
+	public List<BlliPostingVO> getScrapeInfoByMemberId(BlliMemberVO memberVO);
 
 
 }

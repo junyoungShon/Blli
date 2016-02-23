@@ -32,6 +32,7 @@
 		<li><a href="${initParam.root}j_spring_security_logout">로그아웃</a></li>
 		<li><a href="${initParam.root}midCategoryUseWhenModifyBySmallProduct.do">중분류 제품 사용시기 수정 - 소분류 제품 사용시기를 기준으로</a></li>
 		<li><a href="${initParam.root}allProductDownLoader.do">모든 제품 사진 다운로드</a></li>
+		<li><a href="${initParam.root}checkUserExceptionLog.do">사용자에의한 익셉션 확인</a></li>
 	</ul>
 	
 </form>

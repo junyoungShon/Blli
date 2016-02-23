@@ -13,6 +13,7 @@ import javax.mail.MessagingException;
 import kr.co.blli.model.vo.BlliPostingVO;
 import kr.co.blli.model.vo.BlliLogVO;
 import kr.co.blli.model.vo.BlliMemberVO;
+import kr.co.blli.model.vo.BlliUserExceptionLogVO;
 import kr.co.blli.model.vo.ListVO;
 
 public interface AdminService {
@@ -49,4 +50,6 @@ public interface AdminService {
 	public ArrayList<BlliMemberVO> checkMember();
 
 	public void midCategoryUseWhenModifyBySmallProduct();
+
+	ArrayList<BlliUserExceptionLogVO> checkUserExceptionLog() throws IOException;
 }

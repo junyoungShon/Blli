@@ -22,6 +22,7 @@ import kr.co.blli.model.vo.BlliBabyVO;
 import kr.co.blli.model.vo.BlliMailVO;
 import kr.co.blli.model.vo.BlliMemberScrapeVO;
 import kr.co.blli.model.vo.BlliMemberVO;
+import kr.co.blli.model.vo.BlliPostingVO;
 import kr.co.blli.model.vo.BlliScheduleVO;
 import kr.co.blli.utility.BlliFileUtils;
 
@@ -462,8 +463,8 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public ArrayList<BlliMemberScrapeVO> getScrapeInfoByMemberId(BlliMemberVO memberVO) {
-		return (ArrayList<BlliMemberScrapeVO>)memberDAO.getScrapeInfoByMemberId(memberVO);
+	public ArrayList<BlliPostingVO> getScrapeInfoByMemberId(BlliMemberVO memberVO) {
+		return (ArrayList<BlliPostingVO>)memberDAO.getScrapeInfoByMemberId(memberVO);
 	}
 
 	@Override

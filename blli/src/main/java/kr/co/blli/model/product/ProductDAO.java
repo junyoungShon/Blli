@@ -183,4 +183,6 @@ public interface ProductDAO {
 
 	List<BlliSmallProductBuyLinkVO> getDibSmallProductBuyLink(String smallProductId);
 
+	String selectMinPriceBySmallProductId(String smallProductId);
+
 }
