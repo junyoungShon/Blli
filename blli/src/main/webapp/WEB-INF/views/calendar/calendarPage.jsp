@@ -5,36 +5,53 @@
 <script type="text/javascript">
 	
 	var dateObj = new Date();
-	var year = dateObj.getFullYear();
-	var month = dateObj.getMonth()+1;
-	var day = dateObj.getDate();
+	var thisYear = dateObj.getFullYear();
+	var thisMonth = dateObj.getMonth()+1;
+	var thisDay = dateObj.getDate();
+	
+	var y = thisYear;
+	var m = thisMonth;
+	var d = thisDay;
 	
 	$(document).ready(function(){
-		showCalendar(year, month, day);
+		showCalendar(y, m, d);
 	});
 	
 	//달력 츌력
-	function showCalendar(y, m, d) {
+	function showCalendar(leftOrRight) {
 		
-		var calendarControllerText = "<a href='#'><img src='./img/allow_lgray.jpg' alt='왼쪽 화살표' class='fl' onclick='showCalendar("+(m==1?(y-1)+","+12:y+","+(m-1))+")'></a>"
-		+"<div class='fl cal'><p class='cal_year'>"+y+"년</p><p class='cal_month'>"+m+"월</p></div>"
-		+"<a href='#'><img src='./img/allow_rgray.jpg' alt='오른쪽 화살표' class='fr' onclick='showCalendar("+(m==12?(y+1)+","+1:y+","+(m+1))+")'></a>";
+		if(leftOrRight=="left") {
+			if(m==1) {
+				y = y-1;
+				m = 12;
+			} else {
+				m = m-1;
+			}
+		} else if(leftOrRight=="right") {
+			if(m==12) {
+				y = y+1;
+				m = 1;
+			} else {
+				m = m+1;
+			}
+		}
 		
-		document.getElementById('calendarControllerDiv').innerHTML = calendarControllerText;		
+		$(".cal_year").html(y+"년");		
+		$(".cal_month").html(m+"월");
 		
-	    var calendarText = "<table><colgroup><col width='148px'><col width='148px'><col width='148px'>"
-	    			+"<col width='148px'><col width='148px'><col width='148px'><col width='148px'></colgroup>"
-	    			+"<tr><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr>"; 
+		var calendarText = "<colgroup><col width='148px'><col width='148px'><col width='148px'><col width='148px'>"
+							+"<col width='148px'><col width='148px'><col width='148px'></colgroup>"
+							+"<tr><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr>";
 
 	    var d1 = (y+(y-y%4)/4-(y-y%100)/100+(y-y%400)/400 + m*2+(m*5-m*5%9)/9-(m<3?y%4||y%100==0&&y%400?2:3:4))%7;
 	    var numberOfDaysOfThisMonth = (m*9-m*9%8)/8%2+(m==2?y%4||y%100==0&&y%400?28:29:30);
 	    var totalCellNumber = 35;
-	    var thisYear = y-2000;
-	    var thisMonth = m;
-	    var thisDay = d;
+	    var yearForDB = y-2000;
+	    var monthForDB = m;
+	    var DayForDB = d;
 	    
-	    if(thisMonth<10) {
-			thisMonth = "0" + thisMonth;
+	    if(yearForDB<10) {
+	    	yearForDB = "0" + yearForDB;
 		}
 		
 	    for (i = 0; i < totalCellNumber; i++) {
@@ -52,8 +69,8 @@
 	        		if(i<10) {
 	        			i = "0" + i;
 	        		}
-	        		var thisDate = thisYear + "/" + thisMonth + "/" + i;
-		        	if(thisDate==$("input[name=scheduleDate]")[j].value) {
+	        		var dateForDB = yearForDB + "/" + monthForDB + "/" + i;
+		        	if(dateForDB==$("input[name=scheduleDate]")[j].value) {
 		        		scheduleText += '<p class="cal_bg'+(j+1)+'">' + $("input[name=scheduleTitle]")[j].value + '</p>';
 		        	}
 		        	if(i<10) {
@@ -61,11 +78,12 @@
 	        		}
 	        	}
 				
+	        	//string -> number
 	        	i = i*1;
-
+	        	
 	        	//오늘 일자 표시
-	        	if((i+1-d1)==day) {
-	        		calendarText += '<td class="calendarDateCell" bgcolor="#f2f2f2"; ' + (i%7 ? '' : ' style="color:red;"') 
+	        	if(y==thisYear && m==thisMonth && (i+1-d1)==thisDay) {
+	        		calendarText += '<td class="calendarDateCell" bgcolor="red"; ' + (i%7 ? '' : ' style="color:red;"') 
 	        						+ '><p class="cal_day">' + (i+1-d1) + '</p>' + scheduleText +'</td>';
 		        } else {
 		        	calendarText += '<td class="calendarDateCell"' + (i%7 ? '' : ' style="color:red;"') + ((i-6)%7 ? '' : ' style="color:blue;"')
@@ -73,16 +91,26 @@
 		        }
 	        }
 	        
-	        //달력 주차수가 5줄로 모자를 경우 한줄 더 늘려준다.
+	        //달력 주차수가 5줄로 모자를 경우 한 줄 더 늘려준다.
 	        if(i==34 && (i+1-d1)<numberOfDaysOfThisMonth) {
 	        	totalCellNumber = 42;
 	        }
 	    }
-	    document.getElementById('calendarDiv').innerHTML = calendarText + '</tr>\n</table>'; 
+	    $('#calendarTable').html(calendarText);
 	}
+	
+	$(document).on('mouseenter', '.calendarDateCell',  function(){
+		$(this).css("background", "rgba(0,128,192,0.1)");
+	}).on('mouseleave', '.calendarDateCell', function() {
+		$(this).css("background", "rgba(0,128,192,0.05)");
+	});
+	
+	
 	
 	//일정을 추가하고자 하는 일자를 클릭시 해당 일자의 정보와 함께 일정 추가 양식 우측에 출력
 	$(document).on("click", ".calendarDateCell", function(){
+		
+		$(this).css("border", "1px solid red");
 		
 		var thisYear = $(".cal_year").text().substring(0,4);
 		var thisMonth = $(".cal_month").text().substring(0,$(".cal_month").text().length-1);
@@ -104,9 +132,9 @@
 		var thisDate = thisYear+"년 " + thisMonth+"월 "+thisDay+"일"
 		
 		var memberBabyNameList = "";
-		for(var i=0;i<$("input[name=blliBabyVOList]").length;i++) {
-			memberBabyNameList += '<td><input type="checkbox" name="babyName" value="'+$("input[name=babyName]")[i].value+'" style="height:12px;">'
-								+ $("input[name=babyName]")[i].value + '</td>';
+		for(var i=0;i<$("input[name=babyNameList]").length;i++) {
+			memberBabyNameList += '<td><input type="checkbox" name="babyName" value="'+$("input[name=babyNameList]")[i].value+'" style="height:12px;">'
+								+ $("input[name=babyNameList]")[i].value + '</td>';
 		}
 		
 		var showAddSchduleFormText = '<div class="cal_plus_form"><div class="cal_plus_ti">아이 일정 추가</div>'
@@ -156,8 +184,10 @@
 			cache: false,
 			success: function(bsvo){
 				
-				var thisYear = bsvo.scheduleDate.substring(0,4);
-				var thisMonth = bsvo.scheduleDate.substring(4,6);
+				alert(bsvo.scheduleDate);
+				
+				var thisYear = bsvo.scheduleDate.substring(0,2);
+				var thisMonth = bsvo.scheduleDate.substring(3,5);
 				if(thisMonth.indexOf('0')==0) {
 					thisMonth = thisMonth.substring(1);
 				}
@@ -165,6 +195,10 @@
 				if(thisDay.indexOf('0')==0) {
 					thisDay = thisDay.substring(1);
 				}
+				
+				alert(thisYear);
+				alert(thisMonth);
+				alert(thisDay);
 				
 				//1씩 곱해서 string으로 변한 숫자를 다시 number로 만든다
 				thisYear = thisYear*1;
@@ -181,10 +215,10 @@
 	
 	function showSchduleDetail(bsvo) {
 		
-		var yearToString = bsvo.scheduleDate.substring(0,4)+"년 ";
+		var yearToString = "20" + bsvo.scheduleDate.substring(0,2)+"년 ";
 		
 		//1의 자리라서 앞에 0이 붙어있었다면 지워준다.
-		var monthToString = bsvo.scheduleDate.substring(4,6)+"월 ";
+		var monthToString = bsvo.scheduleDate.substring(3,5)+"월 ";
 		if(monthToString.indexOf('0')==0) {
 			monthToString = monthToString.substring(1);
 		}
@@ -306,7 +340,7 @@
 <body background="./img/calendar_bgimg_winter.jpg" style="background-size:100% 100%;">
 
 	<c:forEach items="${sessionScope.blliMemberVO.blliBabyVOList}" var="blliBabyVOList">
-		<input type="hidden" name="babyName" value="${blliBabyVOList.babyName}">
+		<input type="hidden" name="babyNameList" value="${blliBabyVOList.babyName}">
 	</c:forEach>
 	<c:forEach items="${memberScheduleList}" var="memberScheduleList">
 		<input type="hidden" name="scheduleDate" value="${memberScheduleList.scheduleDate}">
@@ -320,8 +354,21 @@
 					이달의 아이 일정
 				</div>
 				<div>
-					<div id="calendarControllerDiv" style='margin-top:30px;'></div>
-					<div id="calendarDiv" class="calendar"></div>
+					<div id="calendarControllerDiv" style="margin-top:30px;">
+						<a href="#">
+							<img src="./img/allow_lgray.jpg" alt="왼쪽 화살표" class="fl" onclick="showCalendar('left')">
+						</a>
+						<div class="fl cal">
+							<p class="cal_year"></p><p class="cal_month"></p>
+						</div>
+						<a href="#">
+							<img src="./img/allow_rgray.jpg" alt="오른쪽 화살표" class="fr" onclick="showCalendar('right')">
+						</a>
+					</div>
+					<div class="calendar">
+						<table id="calendarTable">
+	    				</table>
+					</div>
 				</div>
 			</div>
 		</div>

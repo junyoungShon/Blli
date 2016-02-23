@@ -454,6 +454,7 @@
 						<div class="fr">
 						<div style="margin-top: 15px" class="smallProductDibBtn" data-tooltip-text="찜해두시면 스크랩페이지에서 다시 보실 수 있어요!">
 						<c:if test="${blliSmallProductVOList.isDib==0}">
+						${blliSmallProductVOList.isDib}
 							<i class="fa fa-heart-o fa-2x" style="color: red"></i>
 						</c:if>
 						<c:if test="${blliSmallProductVOList.isDib==1}">
