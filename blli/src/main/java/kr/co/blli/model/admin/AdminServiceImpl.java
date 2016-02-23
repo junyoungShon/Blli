@@ -444,7 +444,7 @@ public class AdminServiceImpl implements AdminService{
 					sbMap.put(smallProductId,new StringBuffer());
 				}
 				blliPostingVOList.get(i).setPostingContent
-				(adminDAO.selectPostingContentByPostingUrl(blliPostingVOList.get(i).getPostingUrl()));
+				(adminDAO.selectPostingContentByPostingUrl(blliPostingVOList.get(i)));
 				sbMap.get(smallProductId).append(blliPostingVOList.get(i).getPostingContent());
 			}
 			Iterator<String> it = sbMap.keySet().iterator();
@@ -602,21 +602,57 @@ public class AdminServiceImpl implements AdminService{
 		adminDAO.snsShareCountUp(smallProductId);
 	}
 	/**
-	  * @Method Name : allProductDownLoader
-	  * @Method 설명 : db 내의 모든 중분류 제품과 소분류 제품을 다운로드하는 메서드
-	  * @작성일 : 2016. 2. 18.
-	  * @작성자 : junyoung
+	 * @Method Name : allProductDownLoader
+	 * @Method 설명 : db 내의 모든 중분류 제품과 소분류 제품을 다운로드하는 메서드
+	 * @작성일 : 2016. 2. 18.
+	 * @작성자 : junyoung
 	 */
 	@Override
 	public void allProductDownLoader() {
 		List <BlliMidCategoryVO> midCategoryList = adminDAO.selectAllMidCategory();
 		List <BlliSmallProductVO> smallProductList = adminDAO.selectAllSmallProduct();
 		for (int i = 0; i < midCategoryList.size(); i++) {
-			blliFileDownLoader.imgFileDownLoader(midCategoryList.get(i).getMidCategoryMainPhotoLink(), midCategoryList.get(i).getMidCategoryId(), "midCategory");
+			String midCategoryMainPhotoLink = blliFileDownLoader.imgFileDownLoader(midCategoryList.get(i).getMidCategoryMainPhotoLink(), midCategoryList.get(i).getMidCategoryId(), "midCategory");
+			midCategoryList.get(i).setMidCategoryMainPhotoLink(midCategoryMainPhotoLink);
+			adminDAO.updateMidCategoryMainPhotoLink(midCategoryList.get(i));
+			System.out.println(midCategoryMainPhotoLink+"다운로드완료");
 		}
 		for (int i = 0; i < smallProductList.size(); i++) {
-			blliFileDownLoader.imgFileDownLoader(smallProductList.get(i).getSmallProductMainPhotoLink(), smallProductList.get(i).getSmallProductId(), "smallProduct");
+			String smallProductMainPhotoLink = 
+					blliFileDownLoader.imgFileDownLoader(smallProductList.get(i).getSmallProductMainPhotoLink(), smallProductList.get(i).getSmallProductId(), "smallProduct");
+			smallProductList.get(i).setSmallProductMainPhotoLink(smallProductMainPhotoLink);
+			adminDAO.updateSmallProductMainPhotoLink(smallProductList.get(i));
+			System.out.println(smallProductMainPhotoLink+"다운로드완료");
 		}
+	}
+	/**
+	  * @Method Name : midCategoryUseWhenModifyBySmallProduct
+	  * @Method 설명 : 소제품종류를 활용하여 미드카테고리의 사용시기를 조정한다.
+	  * @작성일 : 2016. 2. 18.
+	  * @작성자 : junyoung
+	 */
+	@Override
+	public void midCategoryUseWhenModifyBySmallProduct() {
+		List <BlliMidCategoryVO> midCategoryList = adminDAO.selectAllMidCategory();
+		//컨펌인 소제품들 가운데 중분류 제품 중 사용시기가 가장 큰 것을 뽑아 온다.
+		for(int i=0;i<midCategoryList.size();i++){
+			BlliMidCategoryVO blliMidCategoryVO = midCategoryList.get(i);
+			String midCategoryId = blliMidCategoryVO.getMidCategoryId();
+			BlliSmallProductVO blliSmallProductVO = adminDAO.selectMinMaxUseWhenByMidcategoryId(midCategoryId);
+			System.out.println(blliSmallProductVO);
+			if(blliSmallProductVO!=null){
+				blliMidCategoryVO.setWhenToUseMax(blliSmallProductVO.getSmallProductWhenToUseMax());
+				blliMidCategoryVO.setWhenToUseMin(blliSmallProductVO.getSmallProductWhenToUseMin());
+				System.out.println(blliMidCategoryVO);
+				adminDAO.updateMinMaxUseWhenByMidcategoryId(blliMidCategoryVO);
+			}else{
+				blliMidCategoryVO.setWhenToUseMax(-2);
+				blliMidCategoryVO.setWhenToUseMin(-2);
+				System.out.println(blliMidCategoryVO);
+				adminDAO.updateMinMaxUseWhenByMidcategoryId(blliMidCategoryVO);
+			}
+		}
+		System.out.println("미드카테고리 사용시기 수정완료");
 	}
 	@Override
 	public ArrayList<BlliPostingVO> checkPosting() {

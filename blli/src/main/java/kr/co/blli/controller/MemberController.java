@@ -197,6 +197,10 @@ public class MemberController {
 		mav.setViewName("/admin/adminPage");
 		return mav;
 	}
+	@RequestMapping("memberjoin_insertBabyInfo.do")
+	public String memberJoinInsertBabyInfo(){
+		return "memberjoin/insertBabyInfo";
+	}
 	/**
 	  * @Method Name : goJoinMemberPage
 	  * @Method 설명 : 로그인 페이지로 이동
@@ -347,7 +351,7 @@ public class MemberController {
 		blliMemberVO = (BlliMemberVO) request.getSession().getAttribute("blliMemberVO");
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("blliMemberVO", blliMemberVO);
-		mav.setViewName("blli_modifyMemberInfoPage");
+		mav.setViewName("modifyInfo_modifyMemberInfoPage");
 		return mav;
 	}
 	
@@ -364,7 +368,7 @@ public class MemberController {
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("blliMemberVO", blliMemberVO);
 		System.out.println(blliMemberVO.getBlliBabyVOList());
-		mav.setViewName("blli_modifyBabyInfoPage");
+		mav.setViewName("modifyInfo_modifyBabyInfoPage");
 		return mav;
 	}
 	/**

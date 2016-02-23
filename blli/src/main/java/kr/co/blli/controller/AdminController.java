@@ -23,6 +23,10 @@ public class AdminController {
 	@Resource
 	private AdminService adminService;
 	
+	@RequestMapping("admin_goAdminIndexPage.do")
+	public String goAdminIndexPage(){
+		return "admin/adminIndex";
+	}
 	@RequestMapping("sendMail.do")
 	public String sendMail(String memberId, String mailForm) {
 		
@@ -161,6 +165,11 @@ public class AdminController {
 	@RequestMapping("allProductDownLoader.do")
 	public void allProductDownLoader(){
 		adminService.allProductDownLoader();
+		System.out.println("사진다운완료");
+	}
+	@RequestMapping("midCategoryUseWhenModifyBySmallProduct.do")
+	public void midCategoryUseWhenModifyBySmallProduct(){
+		adminService.midCategoryUseWhenModifyBySmallProduct();
 	}
 	
 	@RequestMapping("checkPosting.do")

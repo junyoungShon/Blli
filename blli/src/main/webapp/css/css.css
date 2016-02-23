@@ -255,57 +255,12 @@ img {
 }
 
 .info_bg2{
-	width:320px;
-	background:#000;
-	opacity:0.8;
-	padding:25px;
-	position:absolute;
-	left:38%;
-/* 	margin-left:-175px; */
-	border-radius:10px;
-	top:375px;
-	text-align:center;
-	color:#fff;
-}
-
-.info_bg2 input{
-	width:190px;
-	height:35px;
-}
-
-.info_bg2 p{
-	color:#fff;
-	text-align:center;
-	font-family:'Nanum Barun Gothic';
-	font-size:13px;
-	line-height:30px;
-}
+	display: none;
+	}
 .info_bg3{
-	width:320px;
-	background:#000;
-	opacity:0.8;
-	padding:25px;
-	position:absolute;
-	left:38%;
-/* 	margin-left:-175px; */
-	border-radius:10px;
-	top:584px;
-	text-align:center;
-	color:#fff;
-}
+	display: none;
+	}
 
-.info_bg3 input{
-	width:190px;
-	height:35px;
-}
-
-.info_bg3 p{
-	color:#fff;
-	text-align:center;
-	font-family:'Nanum Barun Gothic';
-	font-size:13px;
-	line-height:30px;
-}
 
 .yellow{
 	color:#febf00;
@@ -454,7 +409,6 @@ img {
 }
 
 .in_fr{
-	position:static;
 	width:1040px;
 	margin:auto;
 }
@@ -478,7 +432,7 @@ img {
 
 .top_nav{
 	color:#fff;
-	font-size:16px;
+	font-size:14px;
 	float:right;
 	font-family:'Nanum Barun Gothic';
 	line-height:65px;
@@ -521,12 +475,12 @@ img {
 }
 
 .result_ti{
-	height:40px;
+	height:45px;
 	background:url(../img/title_dot.png) no-repeat 5px ;
 	font-family:'Nanum Barun Gothic';
 	padding-left:25px;
 	font-weight:bold;
-	font-size:20px;
+	font-size:15px;
 	line-height:40px;
 }
 
@@ -1047,13 +1001,10 @@ img {
 .calendar td{
 	width:128px;
 	height:100px;
-	border:1px solid #808080;
-	background-color: rgba(0,128,192,0.05);
+	border:1px solid #cacaca;
 	padding:10px;
 	font-family:'Nanum Barun Gothic';
 	vertical-align:top;
-	cursor:pointer;
-	hover:blue;
 }
 
 .cal_day{
@@ -1090,15 +1041,13 @@ img {
 /* calpendar_plus */
 
 .cal_plus_form{
-	border:1px solid #ff8040;
+	position:fixed;
 	width:280px;
-	height:90.5%;
-	background:#ffffcc;
+	height:100%;
+	background:#fee04a;
 	right:0;
 	font-family:'Nanum Barun Gothic';
 	padding:20px;
-	position:absolute;
-	top:57px;
 }
 
 .cal_plus_ti{

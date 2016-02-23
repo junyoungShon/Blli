@@ -47,4 +47,6 @@ public interface AdminService {
 	public void notAdvertisingPosting(BlliPostingVO postingVO);
 
 	public ArrayList<BlliMemberVO> checkMember();
+
+	public void midCategoryUseWhenModifyBySmallProduct();
 }

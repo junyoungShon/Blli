@@ -103,8 +103,8 @@ public class AdminDAOImpl implements AdminDAO{
 		return sqlSessionTemplate.selectList("admin.makingWordCloud", smallProductId);
 	}
 	@Override
-	public String selectPostingContentByPostingUrl(String postingUrl) {
-		return sqlSessionTemplate.selectOne("admin.selectPostingContentByPostingUrl", postingUrl);
+	public String selectPostingContentByPostingUrl(BlliPostingVO blliPostingVO) {
+		return sqlSessionTemplate.selectOne("admin.selectPostingContentByPostingUrl", blliPostingVO);
 	}
 	@Override
 	public int updateWordCloud(BlliWordCloudVO blliWordCloudVO) {
@@ -176,5 +176,23 @@ public class AdminDAOImpl implements AdminDAO{
 	@Override
 	public BlliSmallProductVO getSmallProductWhenToUse(String midCategoryId) {
 		return sqlSessionTemplate.selectOne("admin.getSmallProductWhenToUse", midCategoryId);
+	}
+	@Override
+	public BlliSmallProductVO selectMinMaxUseWhenByMidcategoryId(String midCategoryId) {
+		return sqlSessionTemplate.selectOne("admin.selectMinMaxUseWhenByMidcategoryId", midCategoryId);
+	}
+	@Override
+	public void updateMinMaxUseWhenByMidcategoryId(BlliMidCategoryVO blliMidCategoryVO){
+		sqlSessionTemplate.update("admin.updateMinMaxUseWhenByMidcategoryId", blliMidCategoryVO);
+	}
+	@Override
+	public void updateMidCategoryMainPhotoLink(
+			BlliMidCategoryVO blliMidCategoryVO) {
+		sqlSessionTemplate.update("admin.updateMidCategoryMainPhotoLink", blliMidCategoryVO);
+	}
+	@Override
+	public void updateSmallProductMainPhotoLink(
+			BlliSmallProductVO blliSmallProductVO) {
+		sqlSessionTemplate.update("admin.updateSmallProductMainPhotoLink", blliSmallProductVO);
 	}
 }

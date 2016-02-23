@@ -12,24 +12,9 @@
 </head>
 <body>
 <a href="iframeTest.do">아이프레임테스트</a>
- 	<sec:authorize access="hasAnyRole('ROLE_USER')">
-	<script type="text/javascript">
-		location.href='${initParam.root}member_proceedingToMain.do'
-	</script>
-</sec:authorize>
-
-<!-- 아이정보를 입력하지 않은 자동로그인 사용자 && 이미 로그인한 유저의 경우 authorityCheck.jsp로 가서 아이정보 입력 -->
-<sec:authorize access="hasAnyRole('ROLE_RESTRICTED')">
-	<script type="text/javascript">
-		location.href='${initParam.root}authorityCheck.do'
-	</script>
-</sec:authorize>
-
-<!-- 자동로그인 된 관리자의 경우 관리자 페이지로 이동합니다. -->
-<sec:authorize access="hasRole('ROLE_ADMIN')">
 
 <form action="${initParam.root}searchSmallProduct.do">
-<h1>이곳은 관리자 페이지 인덱스입니다 관리자만 접근할 수 있어요.그러냐?</h1>
+<h1>이곳은 관리자 페이지 인덱스입니다 관리자만 접근할 수 있어요.</h1>
 	<ul>
 		<li><a href="${initParam.root}member_goMain.do">goMain.do</a></li>
 		<li><a href="${initParam.root}sendMail.do?memberId=sk159753&mailForm=findPassword">sendMail.do</a></li>
@@ -41,8 +26,12 @@
 		<li><a href="${initParam.root}postingListWithSmallProducts.do">소제품 하나로 추려줘</a></li>
 		<li><a href="${initParam.root}unconfirmedSmallProduct.do">소제품 등록해줘</a></li>
 		<li><a href="${initParam.root}unconfirmedPosting.do">포스팅 등록해줘</a></li>
-		<li><a href="${initParam.root}postingMarker.do">포스팅 체점해줘</a></li>
+		<li><a href="${initParam.root}checkPosting.do">싫어요</a></li>
+		<li><a href="${initParam.root}checkMember.do">회원 목록</a></li>
+		<li><a href="${initParam.root}checkLog.do">로그 조회</a></li>
 		<li><a href="${initParam.root}j_spring_security_logout">로그아웃</a></li>
+		<li><a href="${initParam.root}midCategoryUseWhenModifyBySmallProduct.do">중분류 제품 사용시기 수정 - 소분류 제품 사용시기를 기준으로</a></li>
+		<li><a href="${initParam.root}allProductDownLoader.do">모든 제품 사진 다운로드</a></li>
 	</ul>
 	
 </form>
@@ -50,8 +39,6 @@
   아래는 소셜 플러그인으로 로그인 버튼을 넣는다.
   이 버튼은 자바스크립트 SDK에 그래픽 기반의 로그인 버튼을 넣어서 클릭시 FB.login() 함수를 실행하게 된다.
 -->
-</sec:authorize>
-
 </body>
 <!-- Google 애널리틱스 추적코드 -->
 <script>

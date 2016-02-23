@@ -88,14 +88,14 @@
 	<!-- 스프링 시큐리트 설정 - 유알엘 패턴에 따른 접근 권한 제한 , 로그인 및 로그아웃 폼 커스터마이징 -->
 	<security:http use-expressions="true">
 		<security:intercept-url pattern="/admin_*" access="hasAuthority('ROLE_ADMIN')"/>
-		<security:intercept-url pattern="/member_*" access="hasAuthority('ROLE_USER')" requires-channel=""/>
-		<security:intercept-url pattern="/memberjoin_*" access="isAnonymous()"/>
+		<security:intercept-url pattern="/member_*" access="hasAuthority('ROLE_USER')"/>
+		<security:intercept-url pattern="/memberjoin_*" access="hasAuthority('ROLE_RESTRICTED')"/>
 		<security:intercept-url pattern="/**" access="permitAll"/>
 		<security:form-login
 			username-parameter="memberId"
 			password-parameter="memberPassword"
 			login-page="/loginPage.do"
-			default-target-url="/member_proceedingToMain.do"
+			default-target-url="/authorityCheck.do"
 			authentication-failure-url="/loginPage.do?loginFail=true"
 			authentication-success-handler-ref="blliAuthenticationSuccessHandler"
 		/>                
@@ -107,7 +107,8 @@
 		/>
 		<security:remember-me services-ref="rememberMeServices" key="blli" 
 		authentication-success-handler-ref="blliAuthenticationSuccessHandler"/>
-	</security:http>	
+		</security:http>	
+	
 	
 	<bean id="blliAuthenticationSuccessHandler" 
 		class="kr.co.blli.model.security.BlliAuthenticationSuccessHandler"/>

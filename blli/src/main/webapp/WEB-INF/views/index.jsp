@@ -82,7 +82,7 @@ $(document).ready(function(){
 			</div>
 			<div class="fr">
 				<div class="login_bottom_right">
-				<a href="${initParam.root}adminIndex.do"><img src="./img/bottom_app1.png" alt="안드로이드 다운로드받기"></a>
+				<a href="${initParam.root}admin_adminIndex.do"><img src="./img/bottom_app1.png" alt="안드로이드 다운로드받기"></a>
 				<a href="#"><img src="./img/bottom_app2.png" alt="애플 다운로드받기"></a>
 				</div>
 			</div>
