@@ -42,7 +42,7 @@ public interface PostingDAO {
 
 	String selectTotalPostingtNum();
 
-	BlliPostingVO getPostingInfo(BlliPostingVO blliPostingVO);
+	BlliPostingVO getPostingInfo(BlliMemberScrapeVO blliMemberScrapeVO);
 
 	int getPostingScrapeCount(BlliMemberScrapeVO scrapeVO);
 
@@ -63,8 +63,5 @@ public interface PostingDAO {
 	void updatePostingStatusToConfirmed(BlliPostingVO postingVO);
 
 	List<BlliPostingVO> getPostingSlideListInfo(String smallProductId);
-
-	List<BlliPostingVO> selectPostingBySmallProductList(
-			HashMap<String, String> paraMap);
 
 }

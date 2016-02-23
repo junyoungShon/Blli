@@ -39,18 +39,23 @@ public class BlliWordCounter {
 		workflow.appendMorphemeProcessor(new UnknownProcessor(), null);
 		workflow.setPosTagger(new HMMTagger(), "conf/plugin/MajorPlugin/PosTagger/HmmPosTagger.json");
 		//워크 플로우 실행
-		//분석 텍스트
-		String document = sb.toString();
-		//분석
-		workflow.analyze(document);
-		//분석결과 문자로 출력
-		String result = workflow.getResultOfDocument();
-		//단어 및 카운트를 저장하기 위한 맵 객체
-		HashMap<String, Integer> wordAndCountMap = new HashMap<String, Integer>();
-		//개행문자로 품사태그를 기준으로 배열을 만든다.
-		String resultList [] = result.split("\n");
 		try {
 			workflow.activateWorkflow(true);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		//분석 텍스트
+			String document = sb.toString();
+			//분석
+			workflow.analyze(document);
+			//분석결과 문자로 출력
+			String result = workflow.getResultOfDocument();
+			//단어 및 카운트를 저장하기 위한 맵 객체
+			HashMap<String, Integer> wordAndCountMap = new HashMap<String, Integer>();
+			//개행문자로 품사태그를 기준으로 배열을 만든다.
+			String resultList [] = result.split("\n");
+			
 			for(int i=0;i<resultList.length;i++){
 				if(resultList[i].contains("/n")){
 					if(resultList[i].contains("/n")){
@@ -111,15 +116,13 @@ public class BlliWordCounter {
 				}
 				//System.out.println(i+"번째"+resultList[i].toString());
 			}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}finally{
-				if(workflow!=null){
-					workflow.close();
-					workflow.clear();
-				}
-			}
+			
+			//System.out.println(result);
+			
 			System.out.println("총 추출 단어 수:"+wordAndCountMap.size());
+			
+			workflow.close();
+			workflow.clear();
 			wordAndCountMap = (HashMap<String, Integer>) sortByValue(wordAndCountMap);
 			System.out.println(wordAndCountMap.size());
 			Iterator<String> it = wordAndCountMap.keySet().iterator();
@@ -129,6 +132,7 @@ public class BlliWordCounter {
 				System.out.println("단어 : "+key+" 횟수 : "+value);
 			}
 			long end = System.currentTimeMillis();  //종료시간
+			
 			//종료-시작=실행시간		
 			System.out.println("실행시간  : "+(end-start)/1000.0+"초");
 			return wordAndCountMap;

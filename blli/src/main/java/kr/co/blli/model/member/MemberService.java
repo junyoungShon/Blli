@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import kr.co.blli.model.vo.BlliBabyVO;
 import kr.co.blli.model.vo.BlliMemberScrapeVO;
 import kr.co.blli.model.vo.BlliMemberVO;
-import kr.co.blli.model.vo.BlliPostingVO;
 import kr.co.blli.model.vo.BlliScheduleVO;
 
 public interface MemberService {
@@ -53,6 +52,6 @@ public interface MemberService {
 	
 	
 	//현석 작성 영역
-	public ArrayList<BlliPostingVO> getScrapeInfoByMemberId(BlliMemberVO memberVO);
+	public ArrayList<BlliMemberScrapeVO> getScrapeInfoByMemberId(BlliMemberVO memberVO);
 
 }

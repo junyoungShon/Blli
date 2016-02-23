@@ -254,13 +254,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</update>
 	
 	<select id="getDibSmallProductId" resultType="String">
-		select small_product_id from blli_member_dibs where member_id = #{memberId}
+		select bsp.small_product_id from(
+			select small_product_id from blli_member_dibs where member_id = #{memberId} order by small_product_id asc
+		)bmd, blli_small_product bsp where bmd.small_product_id = bsp.small_product_id and bsp.small_product_status = 'confirmed'
 	</select>
 	
 	<select id="getDibSmallProduct" resultMap="bspvRM">
 		select small_product_id, small_product, mid_category, small_product_maker, small_product_whentouse_min, small_product_whentouse_max, db_insert_posting_count,
 		small_product_dibs_count, small_product_main_photo_link, small_product_score, product_register_day, mid_category_id, small_product_ranking
-		from blli_small_product where small_product_id = #{smallProductId}
+		from blli_small_product where small_product_id = #{smallProductId} and small_product_status = 'confirmed'
 	</select>
 	
 	<select id="getDibSmallProductBuyLink" resultMap="bspblvRM">
@@ -393,9 +395,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	<select id="selectTotalProductNum" resultType="String">
 		select count(*) from blli_small_product
-	</select>
-	<select id="selectMinPriceBySmallProductId" resultType="String">
-		select min(buy_link_price) from blli_small_prod_buy_link where small_product_id = #{value}
 	</select>
 	<!-- 끝 -->
 		

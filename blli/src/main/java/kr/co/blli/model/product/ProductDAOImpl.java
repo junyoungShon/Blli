@@ -537,12 +537,5 @@ public class ProductDAOImpl implements ProductDAO{
 	public List<BlliSmallProductBuyLinkVO> getDibSmallProductBuyLink(String smallProductId) {
 		return sqlSessionTemplate.selectList("product.getDibSmallProductBuyLink", smallProductId);
 	}
-	@Override
-	public String selectMinPriceBySmallProductId(
-			String smallProductId) {
-		return sqlSessionTemplate.selectOne("product.selectMinPriceBySmallProductId", smallProductId);
-	}
-
-
 
 }

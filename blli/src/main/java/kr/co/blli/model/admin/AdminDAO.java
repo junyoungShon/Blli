@@ -51,7 +51,7 @@ public interface AdminDAO {
 
 	List<BlliPostingVO> makingWordCloud(String smallProductId);
 
-	String selectPostingContentByPostingUrl(BlliPostingVO blliPostingVO);
+	String selectPostingContentByPostingUrl(String postingUrl);
 
 	int updateWordCloud(BlliWordCloudVO blliWordCloudVO);
 
@@ -83,14 +83,6 @@ public interface AdminDAO {
 	int totalUnconfirmedPostingBySearchSmallProductId(String searchWord);
 
 	BlliSmallProductVO getSmallProductWhenToUse(String midCategoryId);
-
-	void updateMidCategoryMainPhotoLink(BlliMidCategoryVO blliMidCategoryVO);
-
-	void updateSmallProductMainPhotoLink(BlliSmallProductVO blliSmallProductVO);
-
-	BlliSmallProductVO selectMinMaxUseWhenByMidcategoryId(String midCategoryId);
-
-	void updateMinMaxUseWhenByMidcategoryId(BlliMidCategoryVO blliMidCategoryVO);
 
 }
  

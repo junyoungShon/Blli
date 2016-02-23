@@ -23,10 +23,6 @@ public class AdminController {
 	@Resource
 	private AdminService adminService;
 	
-	@RequestMapping("admin_goAdminIndexPage.do")
-	public String goAdminIndexPage(){
-		return "admin/adminIndex";
-	}
 	@RequestMapping("sendMail.do")
 	public String sendMail(String memberId, String mailForm) {
 		
@@ -165,11 +161,6 @@ public class AdminController {
 	@RequestMapping("allProductDownLoader.do")
 	public void allProductDownLoader(){
 		adminService.allProductDownLoader();
-		System.out.println("사진다운완료");
-	}
-	@RequestMapping("midCategoryUseWhenModifyBySmallProduct.do")
-	public void midCategoryUseWhenModifyBySmallProduct(){
-		adminService.midCategoryUseWhenModifyBySmallProduct();
 	}
 	
 	@RequestMapping("checkPosting.do")
@@ -191,11 +182,5 @@ public class AdminController {
 	public ModelAndView checkMember(){
 		ArrayList<BlliMemberVO> list = (ArrayList<BlliMemberVO>)adminService.checkMember();
 		return new ModelAndView("admin/checkMember", "memberList", list);
-	}
-	@RequestMapping("checkUserExceptionLog.do")
-	public ModelAndView checkUserExceptionLog() throws IOException{
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName("admin/userExceptionLog");
-		return mav.addObject("list", adminService.checkUserExceptionLog());
 	}
 }

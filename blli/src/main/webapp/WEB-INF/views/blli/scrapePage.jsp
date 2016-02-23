@@ -315,7 +315,7 @@ $(document).ready(function(){
 					<c:set var="midCategoryCount" value="${midCategoryCount + 1}"/>
 				</c:if>
 			</c:forEach>
-			<a href="#" class="midCategory" id="${midCategoryList}">${midCategoryList}</a>(${midCategoryCount}) &nbsp; &nbsp;  	
+			<a href="#" class="midCategory" id="${midCategoryList}">${midCategoryList}</a>(${midCategoryCount}) &nbsp; &nbsp;
 		</c:forEach>
 	</div>
 	<c:forEach items="${requestScope.midCategoryList}" var="midCategoryList">

@@ -28,6 +28,7 @@ import kr.co.blli.model.vo.BlliPostingLikeVO;
 import kr.co.blli.model.vo.BlliPostingVO;
 import kr.co.blli.model.vo.BlliScheduleVO;
 import kr.co.blli.model.vo.BlliSmallProductVO;
+import kr.co.blli.model.vo.ListVO;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -132,7 +133,8 @@ public class MemberController {
 			//메인페이지로 이동할 때 회원에게 추천 될 소분류 상품 리스트를 전달 받는다.(또래엄마가 많이 찜한 상품)
 			List<BlliSmallProductVO> blliSmallProductVOList = productService.selectSameAgeMomBestPickedSmallProductList(blliMidCategoryVOList,blliBabyVO);
 			
-			List<BlliPostingVO> blliPostingVOList = postingService.searchPostingBySmallProductList(blliSmallProductVOList,blliMemberVO.getMemberId(),"1");
+			//메인페이지로 이동할 때 회원에게 추천 될 소분류 상품과 관련 된 포스팅을 보여준다.<으아아아 여기있으면 아니되오!!>
+			List<BlliPostingVO> blliPostingVOList = productService.selectPostingBySmallProductList(blliSmallProductVOList,blliMemberVO.getMemberId(),"1");
 			System.out.println(blliSmallProductVOList);
 			for(int i=0;i<blliSmallProductVOList.size();i++){
 				if(blliSmallProductVOList.get(i)!=null) { //용호 추가 - null포인터 방지
@@ -195,10 +197,6 @@ public class MemberController {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/admin/adminPage");
 		return mav;
-	}
-	@RequestMapping("memberjoin_insertBabyInfo.do")
-	public String memberJoinInsertBabyInfo(){
-		return "memberjoin/insertBabyInfo";
 	}
 	/**
 	  * @Method Name : goJoinMemberPage
@@ -350,7 +348,7 @@ public class MemberController {
 		blliMemberVO = (BlliMemberVO) request.getSession().getAttribute("blliMemberVO");
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("blliMemberVO", blliMemberVO);
-		mav.setViewName("modifyInfo_modifyMemberInfoPage");
+		mav.setViewName("blli_modifyMemberInfoPage");
 		return mav;
 	}
 	
@@ -367,7 +365,7 @@ public class MemberController {
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("blliMemberVO", blliMemberVO);
 		System.out.println(blliMemberVO.getBlliBabyVOList());
-		mav.setViewName("modifyInfo_modifyBabyInfoPage");
+		mav.setViewName("blli_modifyBabyInfoPage");
 		return mav;
 	}
 	/**
@@ -572,9 +570,9 @@ public class MemberController {
 		HttpSession session = request.getSession();
 		BlliMemberVO memberVO = (BlliMemberVO) session.getAttribute("blliMemberVO");
 		ArrayList<BlliPostingVO> postingList = new ArrayList<BlliPostingVO>();
-		ArrayList<BlliPostingVO> scrapeList =  memberService.getScrapeInfoByMemberId(memberVO);
+		ArrayList<BlliMemberScrapeVO> scrapeList =  memberService.getScrapeInfoByMemberId(memberVO);
 		for(int i=0;i<scrapeList.size();i++){
-			postingList.add(postingService.searchPostingByUserScrape(scrapeList.get(i), memberVO.getMemberId()));
+			postingList.add(postingService.getPostingInfo(scrapeList.get(i), memberVO.getMemberId()));
 		}
 		ArrayList<String> midCategoryList = new ArrayList<String>();
 		for(int i=0;i<postingList.size();i++){
@@ -594,10 +592,22 @@ public class MemberController {
 	public ModelAndView goDibPage(HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		BlliMemberVO memberVO = (BlliMemberVO) session.getAttribute("blliMemberVO");
-		ArrayList<BlliSmallProductVO> dibSmallProduct = productService.getDibSmallProduct(memberVO.getMemberId());
-		for(int i=0;i<dibSmallProduct.size();i++){
-			dibSmallProduct.get(i).setPostingList(postingService.getPostingSlideListInfo(dibSmallProduct.get(i).getSmallProductId()));
+		ListVO dibSmallProduct = productService.getDibSmallProduct(memberVO.getMemberId(), "1");
+		for(int i=0;i<dibSmallProduct.getList().size();i++){
+			((BlliSmallProductVO) dibSmallProduct.getList().get(i)).setPostingList(postingService.getPostingSlideListInfo(((BlliSmallProductVO)dibSmallProduct.getList().get(i)).getSmallProductId()));
 		}
 		return new ModelAndView("blli_dibPage", "smallProductList", dibSmallProduct);
+	}
+	
+	@ResponseBody
+	@RequestMapping("getDibSmallProductList.do")
+	public ArrayList<BlliSmallProductVO> getDibSmallProductList(HttpServletRequest request, String pageNo) {
+		HttpSession session = request.getSession();
+		BlliMemberVO memberVO = (BlliMemberVO) session.getAttribute("blliMemberVO");
+		ListVO dibSmallProduct = productService.getDibSmallProduct(memberVO.getMemberId(), pageNo);
+		for(int i=0;i<dibSmallProduct.getList().size();i++){
+			((BlliSmallProductVO) dibSmallProduct.getList().get(i)).setPostingList(postingService.getPostingSlideListInfo(((BlliSmallProductVO)dibSmallProduct.getList().get(i)).getSmallProductId()));
+		}
+		return (ArrayList<BlliSmallProductVO>) dibSmallProduct.getList();
 	}
 }

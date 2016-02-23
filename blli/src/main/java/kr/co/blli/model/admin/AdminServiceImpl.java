@@ -27,7 +27,6 @@ import kr.co.blli.model.vo.BlliMidCategoryVO;
 import kr.co.blli.model.vo.BlliPagingBean;
 import kr.co.blli.model.vo.BlliPostingVO;
 import kr.co.blli.model.vo.BlliSmallProductVO;
-import kr.co.blli.model.vo.BlliUserExceptionLogVO;
 import kr.co.blli.model.vo.BlliWordCloudVO;
 import kr.co.blli.model.vo.ListVO;
 import kr.co.blli.utility.BlliFileDownLoader;
@@ -445,7 +444,7 @@ public class AdminServiceImpl implements AdminService{
 					sbMap.put(smallProductId,new StringBuffer());
 				}
 				blliPostingVOList.get(i).setPostingContent
-				(adminDAO.selectPostingContentByPostingUrl(blliPostingVOList.get(i)));
+				(adminDAO.selectPostingContentByPostingUrl(blliPostingVOList.get(i).getPostingUrl()));
 				sbMap.get(smallProductId).append(blliPostingVOList.get(i).getPostingContent());
 			}
 			Iterator<String> it = sbMap.keySet().iterator();
@@ -592,64 +591,6 @@ public class AdminServiceImpl implements AdminService{
 		return list;
 	}
 	/**
-	  * @Method Name : checkUserExceptionLog
-	  * @Method 설명 :
-	  * @작성일 : 2016. 2. 23.
-	  * @작성자 : junyoung
-	  * @return
-	 * @throws IOException 
-	 */
-	@Override
-	public ArrayList<BlliUserExceptionLogVO> checkUserExceptionLog() throws IOException {
-		ArrayList<BlliUserExceptionLogVO> list = new ArrayList<BlliUserExceptionLogVO>();
-		BlliUserExceptionLogVO vo = null;
-		ArrayList<BlliDetailException> detailException = new ArrayList<BlliDetailException>();
-		BlliDetailException exceptionVO = null;
-		int number = 1;
-		BufferedReader in = null;
-		try {
-			String localPath = null;
-			if(System.getProperty("os.name").contains("Windows")){
-				localPath = "C:\\Users\\"+System.getProperty("user.name")+"\\git\\blli\\blli\\src\\main\\webapp\\logFile\\errorByUser.log";
-			}else{
-				//서버 환경일 경우 path
-				localPath = "/usr/bin/apache-tomcat-7.0.64/webapps/logFile/errorByUser.log";
-			}
-			in = new BufferedReader(new FileReader(localPath));
-			String message;
-			StringBuffer exceptionContent = new StringBuffer(); 
-			while ((message = in.readLine()) != null) {
-				if(message.startsWith("------------------Start------------------------")){
-					vo = new BlliUserExceptionLogVO();
-					vo.setNumber(number++);
-				}else if(message.startsWith("발생일자")){
-					vo.setOccuredTime(message.substring(message.indexOf(":")+2));
-				}else if(message.startsWith("발생한에러")){
-					exceptionContent.append(message.substring(message.indexOf(":")+2));
-				}else if(message.startsWith("발생메서드")){
-					vo.setMethodName(message.substring(message.indexOf(":")+2));
-				}else if(message.startsWith("------------------End--------------------------")){
-					vo.setEndBorder(message.substring(message.indexOf(":")+2));
-					vo.setExceptionContent(exceptionContent.toString());
-					list.add(vo);
-					exceptionContent.setLength(0);
-				}else if(message.startsWith("발생클래스")){
-					vo.setClassName(message.substring(message.indexOf(":")+2));
-				}else{
-					exceptionContent.append(message);
-				}
-			}
-		} catch (IOException e) {
-			System.err.println(e); // 에러가 있다면 메시지 출력
-			System.exit(1);
-		}finally{
-			if(in!=null)
-				in.close();
-		}
-		System.out.println(list);
-		return list;
-	}
-	/**
 	  * @Method Name : snsShareCountUp
 	  * @Method 설명 : 공유 횟수를 증가시켜줍니다.
 	  * @작성일 : 2016. 2. 18.
@@ -661,57 +602,21 @@ public class AdminServiceImpl implements AdminService{
 		adminDAO.snsShareCountUp(smallProductId);
 	}
 	/**
-	 * @Method Name : allProductDownLoader
-	 * @Method 설명 : db 내의 모든 중분류 제품과 소분류 제품을 다운로드하는 메서드
-	 * @작성일 : 2016. 2. 18.
-	 * @작성자 : junyoung
+	  * @Method Name : allProductDownLoader
+	  * @Method 설명 : db 내의 모든 중분류 제품과 소분류 제품을 다운로드하는 메서드
+	  * @작성일 : 2016. 2. 18.
+	  * @작성자 : junyoung
 	 */
 	@Override
 	public void allProductDownLoader() {
 		List <BlliMidCategoryVO> midCategoryList = adminDAO.selectAllMidCategory();
 		List <BlliSmallProductVO> smallProductList = adminDAO.selectAllSmallProduct();
 		for (int i = 0; i < midCategoryList.size(); i++) {
-			String midCategoryMainPhotoLink = blliFileDownLoader.imgFileDownLoader(midCategoryList.get(i).getMidCategoryMainPhotoLink(), midCategoryList.get(i).getMidCategoryId(), "midCategory");
-			midCategoryList.get(i).setMidCategoryMainPhotoLink(midCategoryMainPhotoLink);
-			adminDAO.updateMidCategoryMainPhotoLink(midCategoryList.get(i));
-			System.out.println(midCategoryMainPhotoLink+"다운로드완료");
+			blliFileDownLoader.imgFileDownLoader(midCategoryList.get(i).getMidCategoryMainPhotoLink(), midCategoryList.get(i).getMidCategoryId(), "midCategory");
 		}
 		for (int i = 0; i < smallProductList.size(); i++) {
-			String smallProductMainPhotoLink = 
-					blliFileDownLoader.imgFileDownLoader(smallProductList.get(i).getSmallProductMainPhotoLink(), smallProductList.get(i).getSmallProductId(), "smallProduct");
-			smallProductList.get(i).setSmallProductMainPhotoLink(smallProductMainPhotoLink);
-			adminDAO.updateSmallProductMainPhotoLink(smallProductList.get(i));
-			System.out.println(smallProductMainPhotoLink+"다운로드완료");
+			blliFileDownLoader.imgFileDownLoader(smallProductList.get(i).getSmallProductMainPhotoLink(), smallProductList.get(i).getSmallProductId(), "smallProduct");
 		}
-	}
-	/**
-	  * @Method Name : midCategoryUseWhenModifyBySmallProduct
-	  * @Method 설명 : 소제품종류를 활용하여 미드카테고리의 사용시기를 조정한다.
-	  * @작성일 : 2016. 2. 18.
-	  * @작성자 : junyoung
-	 */
-	@Override
-	public void midCategoryUseWhenModifyBySmallProduct() {
-		List <BlliMidCategoryVO> midCategoryList = adminDAO.selectAllMidCategory();
-		//컨펌인 소제품들 가운데 중분류 제품 중 사용시기가 가장 큰 것을 뽑아 온다.
-		for(int i=0;i<midCategoryList.size();i++){
-			BlliMidCategoryVO blliMidCategoryVO = midCategoryList.get(i);
-			String midCategoryId = blliMidCategoryVO.getMidCategoryId();
-			BlliSmallProductVO blliSmallProductVO = adminDAO.selectMinMaxUseWhenByMidcategoryId(midCategoryId);
-			System.out.println(blliSmallProductVO);
-			if(blliSmallProductVO!=null){
-				blliMidCategoryVO.setWhenToUseMax(blliSmallProductVO.getSmallProductWhenToUseMax());
-				blliMidCategoryVO.setWhenToUseMin(blliSmallProductVO.getSmallProductWhenToUseMin());
-				System.out.println(blliMidCategoryVO);
-				adminDAO.updateMinMaxUseWhenByMidcategoryId(blliMidCategoryVO);
-			}else{
-				blliMidCategoryVO.setWhenToUseMax(-2);
-				blliMidCategoryVO.setWhenToUseMin(-2);
-				System.out.println(blliMidCategoryVO);
-				adminDAO.updateMinMaxUseWhenByMidcategoryId(blliMidCategoryVO);
-			}
-		}
-		System.out.println("미드카테고리 사용시기 수정완료");
 	}
 	@Override
 	public ArrayList<BlliPostingVO> checkPosting() {

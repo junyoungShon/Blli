@@ -101,8 +101,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select posting_url, posting_title, posting_content, small_product, small_product_id from(
 			select ceil(rownum/5) as page, posting_url, posting_title, posting_content, small_product, small_product_id from(
 				select count(*) over (partition by posting_url) as count_posting_url, posting_url, posting_title, 
-				posting_content, small_product, small_product_id from blli_posting where posting_status = 'unconfirmed' and small_product like '%' || #{searchWord} || '%' order by small_product asc
-			) where count_posting_url = 1
+				posting_content, small_product, small_product_id from blli_posting where posting_status = 'unconfirmed' order by small_product asc
+			) where count_posting_url = 1 and small_product like '%' || #{searchWord} || '%'
 		) where page = #{pageNo}
 	</select>
 	
@@ -110,8 +110,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select posting_url, posting_title, posting_content, small_product, small_product_id from(
 			select ceil(rownum/5) as page, posting_url, posting_title, posting_content, small_product, small_product_id from(
 				select count(*) over (partition by posting_url) as count_posting_url, posting_url, posting_title, 
-				posting_content, small_product, small_product_id from blli_posting where posting_status = 'unconfirmed' and small_product_id = #{searchWord} order by small_product asc
-			) where count_posting_url = 1
+				posting_content, small_product, small_product_id from blli_posting where posting_status = 'unconfirmed' order by small_product asc
+			) where count_posting_url = 1 and small_product_id = #{searchWord}
 		) where page = #{pageNo}
 	</select>
 	
@@ -123,14 +123,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<select id="totalUnconfirmedPostingBySearchSmallProduct" resultType="int">
 		select count(*) from(
-			select count(*) over (partition by posting_url) as count_posting_url from blli_posting where posting_status = 'unconfirmed' and small_product like '%' || #{searchWord} || '%'
-		) where count_posting_url = 1
+			select count(*) over (partition by posting_url) as count_posting_url, small_product from blli_posting where posting_status = 'unconfirmed'
+		) where count_posting_url = 1 and small_product like '%' || #{searchWord} || '%'
 	</select>
 	
 	<select id="totalUnconfirmedPostingBySearchSmallProductId" resultType="int">
 		select count(*) from(
-			select count(*) over (partition by posting_url) as count_posting_url from blli_posting where posting_status = 'unconfirmed' and small_product_id = #{searchWord}
-		) where count_posting_url = 1
+			select count(*) over (partition by posting_url) as count_posting_url, small_product_id from blli_posting where posting_status = 'unconfirmed'
+		) where count_posting_url = 1 and small_product_id = #{searchWord}
 	</select>
 	
 	<select id="postingListWithSmallProducts" resultMap="bpvRM">
@@ -177,7 +177,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<update id="registerPosting">
 		update blli_posting set posting_status = 'confirmed', posting_photo_link = #{postingPhotoLink} 
-		where posting_url = #{postingUrl}
+		where posting_url = #{postingUrl} and small_product_id = #{smallProductId}
 	</update>
 	
 	<update id="updatePostingCount">
@@ -251,10 +251,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 준영 쿼리 시작 -->
 	<!-- 소제품 명으로 본문 불러오는 메서드 -->
 	<select id="makingWordCloud" resultMap="bpvRM" parameterType="String">
-		select posting_content from blli_posting where posting_url = #{postingUrl} and small_product_id = #{smallProductId} and posting_status = 'confirmed'
+		select posting_content from blli_posting where small_product_id=#{value} and posting_status = 'confirmed'
 	</select>
 	<select id="selectPostingContentByPostingUrl" resultType="String" parameterType="String">
-		select posting_content from blli_posting where posting_url = #{postingUrl} and small_product_id = #{smallProductId} and posting_status = 'confirmed'
+		select posting_content from blli_posting where posting_url = #{value}
 	</select>
 	<update id="updateWordCloud">
 		update blli_word_cloud set word_count = word_count + #{wordCount} where small_product_Id = 
@@ -268,24 +268,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		values (#{word},#{wordCount},#{smallProductId})
 	</insert>
 	<select id="selectAllMidCategory" resultMap="bmcvRM">
-		select mid_Category_Id,mid_category_main_photo_link,mid_category from blli_mid_category 
+		select mid_Category_Id,mid_category_main_photo_link from blli_mid_category 
 	</select>
 	<select id="selectAllSmallProduct" resultMap="bspvRM">
 		select small_product_id,small_product_main_photo_link from blli_small_product 
 	</select>
-	<select id="selectMinMaxUseWhenByMidcategoryId" resultMap="bspvRM">
-		select max(small_product_whentouse_max) as small_product_whentouse_max ,min(small_product_whentouse_min)  
-		as small_product_whentouse_min from blli_small_product where mid_category_id = #{value}
-	</select>
-	<update id="updateMinMaxUseWhenByMidcategoryId">
-		update blli_mid_category set mid_category_whentouse_max = #{whenToUseMin} , mid_category_whentouse_min = #{whenToUseMin} where mid_category_id = #{midCategoryId}
-	</update>
-	<update id="updateMidCategoryMainPhotoLink">
-		update blli_mid_category set mid_category_main_photo_link = #{midCategoryMainPhotoLink} where mid_category_id = #{midCategoryId}
-	</update>
-	<update id="updateSmallProductMainPhotoLink">
-		update blli_small_product set small_product_main_photo_link = #{smallProductMainPhotoLink} where small_product_id = #{smallProductId}
-	</update>
 	<!-- 준영 끝 -->
  </mapper>
  

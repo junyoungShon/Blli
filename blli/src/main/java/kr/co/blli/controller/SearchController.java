@@ -19,6 +19,7 @@ import kr.co.blli.model.vo.BlliBuyLinkClickVO;
 import kr.co.blli.model.vo.BlliMemberVO;
 import kr.co.blli.model.vo.BlliMidCategoryVO;
 import kr.co.blli.model.vo.BlliPostingVO;
+import kr.co.blli.model.vo.BlliSmallProductBuyLinkVO;
 import kr.co.blli.model.vo.BlliSmallProductVO;
 import kr.co.blli.model.vo.BlliWordCloudVO;
 
@@ -64,14 +65,6 @@ public class SearchController {
 	 */
 	@RequestMapping("searchSmallProduct.do")
 	public ModelAndView searchSmallProduct(String pageNo, String searchWord,HttpServletRequest request){
-		HttpSession session = request.getSession();
-		String memberId = "anonymous";
-		if(session!=null){
-			BlliMemberVO blliMemberVO = (BlliMemberVO) session.getAttribute("blliMemberVO");
-			if(blliMemberVO!=null){
-				memberId = blliMemberVO.getMemberId();
-			}
-		}
 		ModelAndView mav = new ModelAndView();
 		ArrayList<BlliSmallProductVO> smallProductList = productService.searchMidCategory(pageNo, searchWord);
 		String viewName = "";
@@ -79,7 +72,7 @@ public class SearchController {
 			HashMap<String, Object> smallProductInfo = productService.searchSmallProduct(searchWord);
 			if(smallProductInfo.get("smallProduct") != null){
 				ArrayList<BlliPostingVO> postingList = 
-						postingService.searchPostingListInProductDetail(((BlliSmallProductVO)smallProductInfo.get("smallProduct")).getSmallProductId(),memberId,"1");
+						postingService.searchPostingListInProductDetail(((BlliSmallProductVO)smallProductInfo.get("smallProduct")).getSmallProductId(),request,"1");
 				viewName = "blli_smallProductDetailPage";
 				mav.addObject("smallProductInfo", smallProductInfo);
 				mav.addObject("blliPostingVOList", postingList);
@@ -102,7 +95,9 @@ public class SearchController {
 			mav.addObject("resultList", smallProductList);
 			mav.addObject("totalPage", productService.totalPageOfSmallProductOfMidCategory(searchWord));
 			mav.addObject("searchWord", searchWord);
+			
 			//소제품 찜 여부 체크
+			HttpSession session =  request.getSession();
 			if(session!=null){
 				BlliMemberVO blliMemberVO = (BlliMemberVO) session.getAttribute("blliMemberVO");
 				for(int i=0;i<smallProductList.size();i++){
@@ -110,7 +105,10 @@ public class SearchController {
 					smallProductList.get(i).setIsDib(blliSmallProductVO.getIsDib());
 				}
 			}
+			
+			
 		}
+		
 		mav.setViewName(viewName);
 		//mav.addObject("searchWord", searchWord);
 		//mav.addObject("totalPage", postingService.totalPageOfPosting(searchWord));
@@ -200,13 +198,10 @@ public class SearchController {
 		HttpSession session = request.getSession();
 		BlliMemberVO blliMemberVO = null;
 		ModelAndView mav = new ModelAndView();
-		if(session!=null){
-			blliMemberVO = (BlliMemberVO) session.getAttribute("blliMemberVO");
-		}
 		HashMap<String, Object> smallProductInfo = productService.searchSmallProduct(smallProduct);
-		String smallProductId = ((BlliSmallProductVO)smallProductInfo.get("smallProduct")).getSmallProductId() ;
+		String smallProductId = ((BlliSmallProductVO)smallProductInfo.get("smallProduct")).getSmallProductId();
 		ArrayList<BlliPostingVO> postingList = 
-				postingService.searchPostingListInProductDetail(smallProductId,blliMemberVO.getMemberId(),"1");
+				postingService.searchPostingListInProductDetail(smallProductId,request,"1");
 		List<BlliWordCloudVO> wordCloudList = productService.selectWordCloudList(smallProductId);
 		if(session!=null){
 			blliMemberVO = (BlliMemberVO) session.getAttribute("blliMemberVO");
@@ -284,14 +279,11 @@ public class SearchController {
 	}
 	
 	@RequestMapping("goBuyMidPage.do")
-	public ModelAndView goBuyMidPage(BlliBuyLinkClickVO blliBuyLinkClickVO,HttpServletRequest request){
-		System.out.println(blliBuyLinkClickVO);
+	public ModelAndView goBuyMidPage(BlliBuyLinkClickVO blliBuyLinkClickVO, BlliSmallProductBuyLinkVO blliSmallProductBuyLinkVO){
 		ModelAndView mav = new ModelAndView();
-		String targetURL = request.getParameter("buyLink");
-		System.out.println(targetURL);
 		mav.setViewName("buyMidPage");
 		mav.addObject("blliBuyLinkClickVO", blliBuyLinkClickVO);
-		mav.addObject("targetURL", targetURL);
+		mav.addObject("targetURL", blliSmallProductBuyLinkVO.getBuyLink());
 		productService.buyLinkClick(blliBuyLinkClickVO);
 		return mav;
 	}

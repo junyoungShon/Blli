@@ -8,7 +8,6 @@ import kr.co.blli.model.vo.BlliBabyVO;
 import kr.co.blli.model.vo.BlliBuyLinkClickVO;
 import kr.co.blli.model.vo.BlliMemberDibsVO;
 import kr.co.blli.model.vo.BlliMemberScrapeVO;
-import kr.co.blli.model.vo.BlliMemberVO;
 import kr.co.blli.model.vo.BlliMidCategoryVO;
 import kr.co.blli.model.vo.BlliNotRecommMidCategoryVO;
 import kr.co.blli.model.vo.BlliPostingDisLikeVO;
@@ -59,7 +58,7 @@ public interface ProductService {
 
 	public String selectTotalProductNum();
 
-	public ArrayList<BlliSmallProductVO> getDibSmallProduct(String memberId);
+	public ListVO getDibSmallProduct(String memberId, String pageNo);
 
 
 }

@@ -90,8 +90,8 @@ public class PostingDAOImpl implements PostingDAO{
 		return sqlSessionTemplate.selectOne("posting.selectTotalPostingtNum");
 	}
 	@Override
-	public BlliPostingVO getPostingInfo(BlliPostingVO blliPostingVO) {
-		return sqlSessionTemplate.selectOne("posting.getPostingInfo", blliPostingVO);
+	public BlliPostingVO getPostingInfo(BlliMemberScrapeVO blliMemberScrapeVO) {
+		return sqlSessionTemplate.selectOne("posting.getPostingInfo", blliMemberScrapeVO);
 	}
 	@Override
 	public int getPostingScrapeCount(BlliMemberScrapeVO scrapeVO) {
@@ -132,9 +132,5 @@ public class PostingDAOImpl implements PostingDAO{
 	@Override
 	public List<BlliPostingVO> getPostingSlideListInfo(String smallProductId) {
 		return sqlSessionTemplate.selectList("posting.getPostingSlideListInfo", smallProductId);
-	}
-	@Override
-	public List<BlliPostingVO> selectPostingBySmallProductList(HashMap<String, String> paraMap) {
-		return sqlSessionTemplate.selectList("posting.selectPostingBySmallProductList", paraMap);
 	}
 }

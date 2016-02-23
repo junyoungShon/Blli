@@ -8,7 +8,6 @@ import kr.co.blli.model.vo.BlliBabyVO;
 import kr.co.blli.model.vo.BlliMailVO;
 import kr.co.blli.model.vo.BlliMemberScrapeVO;
 import kr.co.blli.model.vo.BlliMemberVO;
-import kr.co.blli.model.vo.BlliPostingVO;
 import kr.co.blli.model.vo.BlliScheduleVO;
 
 import org.mybatis.spring.SqlSessionTemplate;
@@ -132,7 +131,7 @@ public class MemberDAOImpl implements MemberDAO{
 	}
 
 	@Override
-	public List<BlliPostingVO> getScrapeInfoByMemberId(BlliMemberVO memberVO) {
+	public List<BlliMemberScrapeVO> getScrapeInfoByMemberId(BlliMemberVO memberVO) {
 		return sqlSessionTemplate.selectList("member.getScrapeInfoByMemberId", memberVO);
 	}
 

@@ -276,9 +276,6 @@ $.ajaxSetup({ cache: false });
 		}
 		
 	});
-	function goBuyMidPage(){
-		$('#smallProductLinkInfo').submit();
-	}
 </script>
 <div class="jbContent">
 	<div class="result_bg1">
@@ -474,8 +471,8 @@ $.ajaxSetup({ cache: false });
 										</c:if>
 									</td>
 									<td>
-										<a href="#" onclick="goBuyMidPage()"><img src="${initParam.root}img/bt_buy.png" alt="사러가기"></a>
 										<form action="goBuyMidPage.do" method="post" id="smallProductLinkInfo">
+											<img src="${initParam.root}img/bt_buy.png" alt="사러가기" onclick="submit();" style="cursor: pointer;">
 											<input type="hidden" name="buyLink" value="${sellerInfo.buyLink}"> 
 											<input type="hidden" name="smallProductId" value="${sellerInfo.smallProductId}"> 
 											<input type="hidden" name="memberId" value="${sessionScope.blliMemberVO.memberId}"> 
@@ -539,12 +536,9 @@ $.ajaxSetup({ cache: false });
 		<div id="slide_img_list">
 			<c:forEach items="${requestScope.postingSlideList}" var="postingList">
 				<div style="height: 175px; display: inline-block;">
-					<img src="${postingList.postingPhotoLink}" alt="${requestScope.smallProductInfo.smallProduct.smallProduct}" class="slideImg">
-					<div onmouseover="this.style.color='yellow'" onmouseout="this.style.color='#ff7f50'" 
-					style="cursor:pointer; text-overflow: ellipsis; height: 10px; color: #ff7f50; font-weight: bold; font-family: 'Nanum Barun Gothic'; text-align: right;" 
-					data-tooltip-text="블로그 구경가기" onclick="goBlogPosting('${postingList.postingUrl}','${postingList.smallProductId}')">
-						${postingList.postingAuthor}
-					</div>	
+					<a href="javascript:goBlogPosting('${postingList.postingUrl}','${postingList.smallProductId}');">
+						<img src="${postingList.postingPhotoLink}" alt="${requestScope.smallProductInfo.smallProduct.smallProduct}" class="slideImg">
+					</a>
 				</div>
 			</c:forEach>
 		</div>
