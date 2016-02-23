@@ -1,5 +1,6 @@
 package kr.co.blli.model.admin;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -90,8 +91,8 @@ public class AdminDAOImpl implements AdminDAO{
 		sqlSessionTemplate.update("admin.updateMidCategoryWhenToUseMax", vo);
 	}
 	@Override
-	public String getMidCategory(String smallProductId) {
-		return sqlSessionTemplate.selectOne("admin.getMidCategory", smallProductId);
+	public String getMidCategoryId(String smallProductId) {
+		return sqlSessionTemplate.selectOne("admin.getMidCategoryId", smallProductId);
 	}
 	@Override
 	public void updatePostingCount(BlliPostingVO vo) {
@@ -149,5 +150,31 @@ public class AdminDAOImpl implements AdminDAO{
 	@Override
 	public void updatePostingStatusToconfirmed(String smallProductId) {
 		sqlSessionTemplate.update("admin.updatePostingStatusToconfirmed", smallProductId);
+	}
+	@Override
+	public List<BlliPostingVO> unconfirmedPostingBySearchSmallProduct(String pageNo, String searchWord) {
+		HashMap<String, String> map = new HashMap<String, String>();
+		map.put("pageNo", pageNo);
+		map.put("searchWord", searchWord);
+		return sqlSessionTemplate.selectList("admin.unconfirmedPostingBySearchSmallProduct", map);
+	}
+	@Override
+	public List<BlliPostingVO> unconfirmedPostingBySearchsmallProductId(String pageNo, String searchWord) {
+		HashMap<String, String> map = new HashMap<String, String>();
+		map.put("pageNo", pageNo);
+		map.put("searchWord", searchWord);
+		return sqlSessionTemplate.selectList("admin.unconfirmedPostingBySearchsmallProductId", map);
+	}
+	@Override
+	public int totalUnconfirmedPostingBySearchSmallProduct(String searchWord) {
+		return sqlSessionTemplate.selectOne("admin.totalUnconfirmedPostingBySearchSmallProduct", searchWord);
+	}
+	@Override
+	public int totalUnconfirmedPostingBySearchSmallProductId(String searchWord) {
+		return sqlSessionTemplate.selectOne("admin.totalUnconfirmedPostingBySearchSmallProductId", searchWord);
+	}
+	@Override
+	public BlliSmallProductVO getSmallProductWhenToUse(String midCategoryId) {
+		return sqlSessionTemplate.selectOne("admin.getSmallProductWhenToUse", midCategoryId);
 	}
 }

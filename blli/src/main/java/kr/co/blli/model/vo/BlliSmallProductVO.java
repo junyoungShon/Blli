@@ -34,6 +34,12 @@ public class BlliSmallProductVO {
 	private List<BlliWordCloudVO> blliWordCloudVOList;
 	//16.02.16추가
 	private int snsShareCount;
+	//16.02.22 추가
+	private List<BlliSmallProductBuyLinkVO> blliSmallProductBuyLinkVOList;
+	//16.02.22 추가
+	private List<BlliSmallProductVO> otherSmallProductList;
+	//16.02.22 추가
+	private List<BlliPostingVO> postingList;
 	public BlliSmallProductVO() {
 		super();
 	}
@@ -211,6 +217,26 @@ public class BlliSmallProductVO {
 	public void setSnsShareCount(int snsShareCount) {
 		this.snsShareCount = snsShareCount;
 	}
+	public List<BlliSmallProductBuyLinkVO> getBlliSmallProductBuyLinkVOList() {
+		return blliSmallProductBuyLinkVOList;
+	}
+	public void setBlliSmallProductBuyLinkVOList(
+			List<BlliSmallProductBuyLinkVO> blliSmallProductBuyLinkVOList) {
+		this.blliSmallProductBuyLinkVOList = blliSmallProductBuyLinkVOList;
+	}
+	public List<BlliSmallProductVO> getOtherSmallProductList() {
+		return otherSmallProductList;
+	}
+	public void setOtherSmallProductList(
+			List<BlliSmallProductVO> otherSmallProductList) {
+		this.otherSmallProductList = otherSmallProductList;
+	}
+	public List<BlliPostingVO> getPostingList() {
+		return postingList;
+	}
+	public void setPostingList(List<BlliPostingVO> postingList) {
+		this.postingList = postingList;
+	}
 	@Override
 	public String toString() {
 		return "BlliSmallProductVO [smallProduct=" + smallProduct
@@ -232,7 +258,9 @@ public class BlliSmallProductVO {
 				+ ", productDbInsertDate=" + productDbInsertDate
 				+ ", dbInsertPostingCount=" + dbInsertPostingCount
 				+ ", blliWordCloudVOList=" + blliWordCloudVOList
-				+ ", snsShareCount=" + snsShareCount + "]";
+				+ ", snsShareCount=" + snsShareCount
+				+ ", blliSmallProductBuyLinkVOList="
+				+ blliSmallProductBuyLinkVOList + ", otherSmallProductList="
+				+ otherSmallProductList + ", postingList=" + postingList + "]";
 	}
-	
 }

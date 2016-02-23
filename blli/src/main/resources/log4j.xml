@@ -20,7 +20,7 @@
 	<!-- 일주일 간격으로 로그 파일 생성(로컬) -->
     <appender name="rollingFileInLocal" class="org.apache.log4j.DailyRollingFileAppender">
     	<param name="Threshold" value="ERROR"/>
-        <param name="File" value="C:/Users/Park/git/blli/blli/src/main/webapp/logFile/blliLog.log"/>
+        <param name="File" value="C:/Users/용호/git/blli/blli/src/main/webapp/logFile/blliLog.log"/>
         <param name="Append" value="true"/>
         <param name="DatePattern" value="'.'yyyy-ww"/> 
         <layout class="org.apache.log4j.PatternLayout">

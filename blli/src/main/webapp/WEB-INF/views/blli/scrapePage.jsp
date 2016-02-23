@@ -5,7 +5,7 @@
 
 <style>
 .scrape_bg_color_one {
-	background-color: #FAFAFA;
+	background-color: honeydew;
 	height: 255px;
 }
 .scrape_bg_color_two {

@@ -3,11 +3,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <script>
-	//현재 스크롤바의 위치를 저장하는 변수 (px)
-	FB.ui({
-  method: 'share',
-  href: 'https://developers.facebook.com/docs/',
-}, function(response){});
+$.ajaxSetup({ cache: false });
+
 	//무한 스크롤의 현재 페이지 넘버를 저장
 	var pageNum = 1;
 	
@@ -64,7 +61,45 @@
 		 	}); 
 		},2000);
 	}
+	
 	$(document).ready(function(){
+		var width = $(document).width();
+		var count = 0;
+		var totalImageWidth = 0;
+		var currImageWidth = 0;
+		
+		window.onload = function(){
+			$(".slideImg").each(function() {
+	        	count++;
+	        	width = width - $(this).width();
+	        	totalImageWidth = totalImageWidth + $(this).width();
+		        if($(".slideImg").length == count){
+		        	var index = 0;
+		        	$(".slideImg").each(function(i) {
+		        		currImageWidth = currImageWidth + $(this).width();
+		        		if(currImageWidth > (totalImageWidth/2)){
+		        			index = i;
+		        			return false;
+		        		}
+		        	});
+		        	if(width > 0){
+		        		$("#slide_img_list").flickity({
+	        				cellAlign: 'center',
+	        				imagesLoaded: 'true',
+	        				initialIndex: index
+	        			});
+		        		return false;
+		        	}else{
+		        		$("#slide_img_list").flickity({
+		        			wrapAround: 'true',
+	        				imagesLoaded: 'true'
+	        			});
+		        		return false;
+		        	}
+		        }
+		    });
+		};
+		
 		$( '.jbMenu' ).addClass( 'jbFixed' );
 		//소제품 찜하기 스크립트
 		$('.in_fr').on("click", ".smallProductDibBtn",function(){
@@ -501,10 +536,16 @@
 			</div>
 		</div>
 	<div class="jbMenu2">
-		<div class="gallery js-flickity" data-flickity-options='{ "imagesLoaded": true , "wrapAround": true}'>
-			<c:forEach items="${requestScope.blliPostingVOList}" var="postingList">
-			<a href="#" onclick="goBlogPosting('${postingList.postingUrl}','${postingList.smallProductId}')">
-				<img src="${postingList.postingPhotoLink}" alt="${requestScope.smallProductInfo.smallProduct.smallProduct}"></a>
+		<div id="slide_img_list">
+			<c:forEach items="${requestScope.postingSlideList}" var="postingList">
+				<div style="height: 175px; display: inline-block;">
+					<img src="${postingList.postingPhotoLink}" alt="${requestScope.smallProductInfo.smallProduct.smallProduct}" class="slideImg">
+					<div onmouseover="this.style.color='yellow'" onmouseout="this.style.color='#ff7f50'" 
+					style="cursor:pointer; text-overflow: ellipsis; height: 10px; color: #ff7f50; font-weight: bold; font-family: 'Nanum Barun Gothic'; text-align: right;" 
+					data-tooltip-text="블로그 구경가기" onclick="goBlogPosting('${postingList.postingUrl}','${postingList.smallProductId}')">
+						${postingList.postingAuthor}
+					</div>	
+				</div>
 			</c:forEach>
 		</div>
 	</div>

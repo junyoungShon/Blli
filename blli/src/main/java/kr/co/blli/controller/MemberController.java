@@ -587,4 +587,14 @@ public class MemberController {
 		return mav;
 	}
 	
+	@RequestMapping("goDibPage.do")
+	public ModelAndView goDibPage(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		BlliMemberVO memberVO = (BlliMemberVO) session.getAttribute("blliMemberVO");
+		ArrayList<BlliSmallProductVO> dibSmallProduct = productService.getDibSmallProduct(memberVO.getMemberId());
+		for(int i=0;i<dibSmallProduct.size();i++){
+			dibSmallProduct.get(i).setPostingList(postingService.getPostingSlideListInfo(dibSmallProduct.get(i).getSmallProductId()));
+		}
+		return new ModelAndView("blli_dibPage", "smallProductList", dibSmallProduct);
+	}
 }

@@ -151,7 +151,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<select id="searchSmallProduct" resultMap="bspvRM">
-		select sp.mid_category, bl.small_product_id, bl.min_price, sp.small_product, sp.small_product_main_photo_link, sp.small_product_whentouse_min, 
+		select sp.mid_category, sp.mid_category_id, bl.small_product_id, bl.min_price, sp.small_product, sp.small_product_main_photo_link, sp.small_product_whentouse_min, 
 		sp.small_product_whentouse_max, sp.db_insert_posting_count, sp.small_product_score,sp.small_product_dibs_count from(
 			select b.small_product_id, min(b.buy_link_price) as min_price from (
 				select small_product_id from blli_small_product where small_product = #{searchWord} and small_product_status = 'confirmed'
@@ -165,7 +165,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<select id="getOtherSmallProductList" resultMap="bspvRM">
 		select small_product_id, small_product, small_product_score, small_product_main_photo_link
-		from blli_small_product where mid_category = #{midCategory} and small_product_status = 'confirmed' and small_product != #{smallProduct} order by small_product_score desc
+		from blli_small_product where mid_category_id = #{midCategoryId} and small_product_status = 'confirmed' and small_product_id != #{smallProductId} order by small_product_score desc
 	</select>
 	
 	<select id="searchSmallProductList" resultMap="bspvRM">
@@ -252,6 +252,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<update id="addDbInsertPostingCount">
 		update blli_small_product set db_insert_posting_count = db_insert_posting_count + 1 where small_product_id = #{smallProductId}
 	</update>
+	
+	<select id="getDibSmallProductId" resultType="String">
+		select small_product_id from blli_member_dibs where member_id = #{memberId}
+	</select>
+	
+	<select id="getDibSmallProduct" resultMap="bspvRM">
+		select small_product_id, small_product, mid_category, small_product_maker, small_product_whentouse_min, small_product_whentouse_max, db_insert_posting_count,
+		small_product_dibs_count, small_product_main_photo_link, small_product_score, product_register_day, mid_category_id, small_product_ranking
+		from blli_small_product where small_product_id = #{smallProductId}
+	</select>
+	
+	<select id="getDibSmallProductBuyLink" resultMap="bspblvRM">
+		select buy_link, buy_link_price, buy_link_delivery_cost, buy_link_option, seller from blli_small_prod_buy_link where small_product_id = #{smallProductId}
+	</select>
 	<!-- 현석 쿼리 끝 -->
 
 	<!-- 준영쿼리 시작 -->

@@ -1,6 +1,5 @@
 package kr.co.blli.model.product;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -345,8 +344,8 @@ public class ProductDAOImpl implements ProductDAO{
 	}
 
 	@Override
-	public List<BlliSmallProductVO> getOtherSmallProductList(HashMap<String, Object> map) {
-		return sqlSessionTemplate.selectList("product.getOtherSmallProductList", map);
+	public List<BlliSmallProductVO> getOtherSmallProductList(BlliSmallProductVO smallProductVO) {
+		return sqlSessionTemplate.selectList("product.getOtherSmallProductList", smallProductVO);
 	}
 
 	@Override
@@ -522,6 +521,21 @@ public class ProductDAOImpl implements ProductDAO{
 	@Override
 	public void addDbInsertPostingCount(String smallProductId) {
 		sqlSessionTemplate.update("product.addDbInsertPostingCount", smallProductId);
+	}
+
+	@Override
+	public List<String> getDibSmallProductId(String memberId) {
+		return sqlSessionTemplate.selectList("product.getDibSmallProductId", memberId);
+	}
+
+	@Override
+	public BlliSmallProductVO getDibSmallProduct(String smallProductId) {
+		return sqlSessionTemplate.selectOne("product.getDibSmallProduct", smallProductId);
+	}
+
+	@Override
+	public List<BlliSmallProductBuyLinkVO> getDibSmallProductBuyLink(String smallProductId) {
+		return sqlSessionTemplate.selectList("product.getDibSmallProductBuyLink", smallProductId);
 	}
 
 }

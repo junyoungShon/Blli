@@ -45,7 +45,7 @@ public interface AdminDAO {
 
 	void updateMidCategoryWhenToUse(BlliSmallProductVO vo);
 
-	String getMidCategory(String smallProductId);
+	String getMidCategoryId(String smallProductId);
 
 	void updatePostingCount(BlliPostingVO vo);
 
@@ -73,6 +73,16 @@ public interface AdminDAO {
 	void insertPermanentDeadPosting(BlliPostingVO vo);
 
 	void updatePostingStatusToconfirmed(String smallProductId);
+
+	List<BlliPostingVO> unconfirmedPostingBySearchSmallProduct(String pageNo, String searchWord);
+
+	List<BlliPostingVO> unconfirmedPostingBySearchsmallProductId(String pageNo, String searchWord);
+
+	int totalUnconfirmedPostingBySearchSmallProduct(String searchWord);
+
+	int totalUnconfirmedPostingBySearchSmallProductId(String searchWord);
+
+	BlliSmallProductVO getSmallProductWhenToUse(String midCategoryId);
 
 }
  

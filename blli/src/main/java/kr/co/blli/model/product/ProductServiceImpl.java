@@ -267,9 +267,7 @@ public class ProductServiceImpl implements ProductService{
 		BlliSmallProductVO smallProduct = productDAO.searchSmallProduct(searchWord);
 		ArrayList<BlliSmallProductBuyLinkVO> buyLink = null;
 		ArrayList<BlliSmallProductVO> otherSmallProductList = null;
-		String midCategory = "";
 		if(smallProduct != null){
-			midCategory = smallProduct.getMidCategory();
 			//가격에 , 붙여서 다시 저장 후 반환
 			DecimalFormat df = new DecimalFormat("#,##0");
 			smallProduct.setMinPrice(df.format(Integer.parseInt(smallProduct.getMinPrice())));
@@ -279,10 +277,7 @@ public class ProductServiceImpl implements ProductService{
 					buyLink.get(i).setBuyLinkPrice(df.format(Integer.parseInt(buyLink.get(i).getBuyLinkPrice())));
 				}
 			}
-			HashMap<String, Object> map = new HashMap<String, Object>();
-			map.put("midCategory", midCategory);
-			map.put("smallProduct", searchWord);
-			otherSmallProductList = (ArrayList<BlliSmallProductVO>)productDAO.getOtherSmallProductList(map);
+			otherSmallProductList = (ArrayList<BlliSmallProductVO>)productDAO.getOtherSmallProductList(smallProduct);
 			//smallProductDetailCount를 올려줍니다.
 			productDAO.updateSmallProductDetailViewCount(smallProduct.getSmallProductId());
 		}
@@ -330,12 +325,8 @@ public class ProductServiceImpl implements ProductService{
 	@Override
 	public ListVO getOtherProductList(String pageNo, String smallProduct) {
 		BlliSmallProductVO smallProductVO = productDAO.searchSmallProduct(smallProduct);
-		HashMap<String, Object> map = new HashMap<String, Object>();
 		String midCategory = smallProductVO.getMidCategory();
-		map.put("midCategory", midCategory);
-		map.put("smallProduct", smallProduct);
-		map.put("pageNo", pageNo);
-		ArrayList<BlliSmallProductVO> smallProductList = (ArrayList<BlliSmallProductVO>)productDAO.getOtherSmallProductList(map);
+		ArrayList<BlliSmallProductVO> smallProductList = (ArrayList<BlliSmallProductVO>)productDAO.getOtherSmallProductList(smallProductVO);
 		int total = productDAO.totalOtherSmallProduct(midCategory);
 		BlliPagingBean paging = new BlliPagingBean(total, Integer.parseInt(pageNo));
 		paging.setNumberOfPageGroup(1);
@@ -441,6 +432,30 @@ public class ProductServiceImpl implements ProductService{
 		DecimalFormat df = new DecimalFormat();
 		String totalPostingNum = df.format(Integer.parseInt(productDAO.selectTotalProductNum()));
 		return totalPostingNum;
+	}
+	@Override
+	public ArrayList<BlliSmallProductVO> getDibSmallProduct(String memberId) {
+		ArrayList<String> dibSmallProductId = (ArrayList<String>)productDAO.getDibSmallProductId(memberId);
+		ArrayList<BlliSmallProductVO> dibSmallProductList = new ArrayList<BlliSmallProductVO>();
+		DecimalFormat df = new DecimalFormat("#,##0");
+		for(int i=0;i<dibSmallProductId.size();i++){
+			BlliSmallProductVO dibSmallProduct = new BlliSmallProductVO();
+			dibSmallProduct = productDAO.getDibSmallProduct(dibSmallProductId.get(i));
+			ArrayList<BlliSmallProductBuyLinkVO> dibSmallProductBuyLink = (ArrayList<BlliSmallProductBuyLinkVO>)productDAO.getDibSmallProductBuyLink(dibSmallProductId.get(i));
+			dibSmallProduct.setBlliSmallProductBuyLinkVOList(dibSmallProductBuyLink);
+			int minPrice = Integer.parseInt(dibSmallProductBuyLink.get(0).getBuyLinkPrice());
+			for(int j=0;j<dibSmallProductBuyLink.size();j++){
+				if(minPrice > Integer.parseInt(dibSmallProductBuyLink.get(j).getBuyLinkPrice())){
+					minPrice = Integer.parseInt(dibSmallProductBuyLink.get(j).getBuyLinkPrice());
+				}
+				dibSmallProductBuyLink.get(j).setBuyLinkPrice(df.format(Integer.parseInt(dibSmallProductBuyLink.get(j).getBuyLinkPrice())));
+			}
+			dibSmallProduct.setMinPrice(df.format(minPrice));
+			dibSmallProduct.setIsDib(1);
+			dibSmallProduct.setOtherSmallProductList(productDAO.getOtherSmallProductList(dibSmallProduct));
+			dibSmallProductList.add(dibSmallProduct);
+		}
+		return dibSmallProductList;
 	}
 
 }

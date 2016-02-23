@@ -22,6 +22,11 @@
 <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
 <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 <script type="text/javascript">
+function search_unconfirmedPosting(){
+	var category = $("#category").val();
+	var search_word = $("#search_word").val();
+	location.href="${initParam.root}unconfirmedPosting.do?category="+category+"&searchWord="+search_word;
+}
 	$(document).ready(function(){
 		var urlAndImage = [];
 		var flag = true;
@@ -108,6 +113,12 @@
 			}
 		});
 		
+		$("#search_word").keydown(function (key) {
+            if (key.keyCode == 13) {
+            	search_unconfirmedPosting();
+            }
+        });
+		
 	});
 </script>
 </head>
@@ -164,15 +175,23 @@
 </c:forEach>
 </table>
 
+<div style="margin: auto; width: 70%; text-align: center;">
+	<select id="category">
+		<option value="smallProductId">제품 ID</option>
+		<option value="smallProduct">제품명</option>
+	</select>
+	<input id="search_word" type="text"> <input type="button" value="검색" onclick="search_unconfirmedPosting();">
+</div>
+
 <p align="center">
 	<c:set var="pb" value="${requestScope.resultList.pagingBean}"></c:set>
 	<c:if test="${pb.previousPageGroup}">
-		<a href="${initParam.root}unconfirmedPosting.do?pageNo=${pb.startPageOfPageGroup-1}">Prev</a>
+		<a href="${initParam.root}unconfirmedPosting.do?pageNo=${pb.startPageOfPageGroup-1}&category=${requestScope.category}&searchWord=${requestScope.searchWord}">Prev</a>
 	</c:if>
 	<c:forEach var="i" begin="${pb.startPageOfPageGroup}" end="${pb.endPageOfPageGroup}">
 		<c:choose>
 			<c:when test="${pb.nowPage!=i}">
-				<a href="${initParam.root}unconfirmedPosting.do?pageNo=${i}">${i}</a>
+				<a href="${initParam.root}unconfirmedPosting.do?pageNo=${i}&category=${requestScope.category}&searchWord=${requestScope.searchWord}">${i}</a>
 			</c:when>
 			<c:otherwise>
 				${i}
@@ -180,7 +199,7 @@
 		</c:choose>
 	</c:forEach>
 	<c:if test="${pb.nextPageGroup}">
-		<a href="${initParam.root}unconfirmedPosting.do?pageNo=${pb.endPageOfPageGroup+1}">Next</a>
+		<a href="${initParam.root}unconfirmedPosting.do?pageNo=${pb.endPageOfPageGroup+1}&category=${requestScope.category}&searchWord=${requestScope.searchWord}">Next</a>
 	</c:if>
 </p>
 
